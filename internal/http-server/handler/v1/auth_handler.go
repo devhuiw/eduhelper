@@ -34,7 +34,7 @@ func (h *AuthHandler) Login(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, response.Error("invalid request"))
 			return
 		}
-		user, err := h.userRepo.GetByEmail(r.Context(), req.Email)
+		user, err := h.userRepo.GetClientByEmail(r.Context(), req.Email)
 		if err != nil || user == nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			render.JSON(w, r, response.Error("invalid credentials"))
@@ -77,7 +77,7 @@ func (h *AuthHandler) Register(log *slog.Logger) http.HandlerFunc {
 			return
 		}
 
-		existingUser, err := h.userRepo.GetByEmail(r.Context(), req.Email)
+		existingUser, err := h.userRepo.GetClientByEmail(r.Context(), req.Email)
 		fmt.Printf("DEBUG GetByEmail: user=%+v, err=%v\n", existingUser, err)
 		if existingUser != nil {
 			w.WriteHeader(http.StatusConflict)
@@ -100,7 +100,7 @@ func (h *AuthHandler) Register(log *slog.Logger) http.HandlerFunc {
 			LastName:   req.LastName,
 			MiddleName: req.MiddleName,
 		}
-		if err := h.userRepo.Create(r.Context(), user); err != nil {
+		if err := h.userRepo.CreateClient(r.Context(), user); err != nil {
 			log.Error("failed to create user", slog.String("err", err.Error()))
 			w.WriteHeader(http.StatusInternalServerError)
 			render.JSON(w, r, response.Error("internal error"))

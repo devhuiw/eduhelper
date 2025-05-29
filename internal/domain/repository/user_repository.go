@@ -17,7 +17,7 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-func (r *UserRepository) Create(ctx context.Context, user *models.User) error {
+func (r *UserRepository) CreateClient(ctx context.Context, user *models.User) error {
 	query := `
 		INSERT INTO user (
 			first_name, last_name, middle_name, email, password, created_at, update_at
@@ -48,7 +48,7 @@ func (r *UserRepository) Create(ctx context.Context, user *models.User) error {
 	return nil
 }
 
-func (r *UserRepository) GetByID(ctx context.Context, id int64) (*models.User, error) {
+func (r *UserRepository) GetClientByID(ctx context.Context, id int64) (*models.User, error) {
 	query := `
 		SELECT user_id, created_at, updated_at, first_name, last_name, middle_name, email, password
 		FROM user WHERE user_id = ?
@@ -79,7 +79,7 @@ func (r *UserRepository) GetByID(ctx context.Context, id int64) (*models.User, e
 	return user, nil
 }
 
-func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*models.User, error) {
+func (r *UserRepository) GetClientByEmail(ctx context.Context, email string) (*models.User, error) {
 	query := `
 		SELECT user_id, created_at, update_at, first_name, last_name, middle_name, email, password
 		FROM user WHERE email = ?
@@ -113,7 +113,7 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*models.
 	return user, nil
 }
 
-func (r *UserRepository) Update(ctx context.Context, user *models.User) error {
+func (r *UserRepository) UpdateClient(ctx context.Context, user *models.User) error {
 	query := `
 		UPDATE user SET
 			first_name = ?, last_name = ?, middle_name = ?, email = ?, password = ?, updated_at = ?
@@ -133,13 +133,13 @@ func (r *UserRepository) Update(ctx context.Context, user *models.User) error {
 	return err
 }
 
-func (r *UserRepository) Delete(ctx context.Context, id int64) error {
+func (r *UserRepository) DeleteClient(ctx context.Context, id int64) error {
 	query := `DELETE FROM user WHERE user_id = ?`
 	_, err := r.db.ExecContext(ctx, query, id)
 	return err
 }
 
-func (r *UserRepository) List(ctx context.Context, limit, offset int) ([]*models.User, error) {
+func (r *UserRepository) ListClient(ctx context.Context, limit, offset int) ([]*models.User, error) {
 	query := `
 		SELECT user_id, created_at, updated_at, first_name, last_name, middle_name, email, password
 		FROM user ORDER BY user_id LIMIT ? OFFSET ?

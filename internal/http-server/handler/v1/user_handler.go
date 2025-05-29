@@ -18,12 +18,12 @@ import (
 )
 
 type UserRepository interface {
-	Create(ctx context.Context, user *models.User) error
-	GetByID(ctx context.Context, id int64) (*models.User, error)
-	GetByEmail(ctx context.Context, email string) (*models.User, error)
-	Update(ctx context.Context, user *models.User) error
-	Delete(ctx context.Context, id int64) error
-	List(ctx context.Context, limit, offset int) ([]*models.User, error)
+	CreateClient(ctx context.Context, user *models.User) error
+	GetClientByID(ctx context.Context, id int64) (*models.User, error)
+	GetClientByEmail(ctx context.Context, email string) (*models.User, error)
+	UpdateClient(ctx context.Context, user *models.User) error
+	DeleteClient(ctx context.Context, id int64) error
+	ListClient(ctx context.Context, limit, offset int) ([]*models.User, error)
 }
 
 type UserHandler struct {
@@ -36,7 +36,7 @@ func NewUserHandler(repo UserRepository) *UserHandler {
 
 // POST /api/v1/users
 func (h *UserHandler) CreateUser(log *slog.Logger) http.HandlerFunc {
-	const op = "handler.v1.user.CreateUser"
+	const op = "handler.v1.user_handler.CreateUser"
 	return func(w http.ResponseWriter, r *http.Request) {
 		log := log.With(
 			slog.String("op", op),
@@ -49,7 +49,7 @@ func (h *UserHandler) CreateUser(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("invalid request"))
 			return
 		}
-		if err := h.repo.Create(r.Context(), &user); err != nil {
+		if err := h.repo.CreateClient(r.Context(), &user); err != nil {
 			log.Error("failed to create user", slog.String("err", err.Error()))
 			w.WriteHeader(http.StatusInternalServerError)
 			render.JSON(w, r, resp.Error("failed to create user"))
@@ -76,7 +76,7 @@ func (h *UserHandler) GetUserByID(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("invalid user id"))
 			return
 		}
-		user, err := h.repo.GetByID(r.Context(), id)
+		user, err := h.repo.GetClientByID(r.Context(), id)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("user not found", slog.Int64("user_id", id))
@@ -117,7 +117,7 @@ func (h *UserHandler) UpdateUser(log *slog.Logger) http.HandlerFunc {
 			return
 		}
 		user.UserID = id
-		if err := h.repo.Update(r.Context(), &user); err != nil {
+		if err := h.repo.UpdateClient(r.Context(), &user); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("user not found for update", slog.Int64("user_id", id))
 				w.WriteHeader(http.StatusNotFound)
@@ -150,7 +150,7 @@ func (h *UserHandler) DeleteUser(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("invalid user id"))
 			return
 		}
-		if err := h.repo.Delete(r.Context(), id); err != nil {
+		if err := h.repo.DeleteClient(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("user not found for delete", slog.Int64("user_id", id))
 				w.WriteHeader(http.StatusNotFound)
@@ -181,7 +181,7 @@ func (h *UserHandler) ListUsers(log *slog.Logger) http.HandlerFunc {
 		if limit == 0 {
 			limit = 20
 		}
-		users, err := h.repo.List(r.Context(), limit, offset)
+		users, err := h.repo.ListClient(r.Context(), limit, offset)
 		if err != nil {
 			log.Error("failed to list users", slog.String("err", err.Error()))
 			w.WriteHeader(http.StatusInternalServerError)
