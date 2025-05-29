@@ -1,6 +1,12 @@
 env: "local" #local, dev, prod
-storage_path: "./storage/storage.db"
+sql_path:
+  user: root
+  password: root
+  host: localhost
+  port: 3306
+  db_name: EduHelper
 http_server:
   address: "localhost:8082"
   timeout: 4s
   idle_timeout: 60s
+jwt-secret: 5ddbbe435202f5090733be2b6d2a25f29ab67adffe743dffe93cd1f36368ed184ba5a7112570880fbb1cb6b7083690cebd5a30df933f538097f174ef54d9c04c686e343b8a4fecf275e629f9af7ae7f5425aa9f5fdcd9c7babc2fb9a6f7ddfbe6805c668615fc97192189dc935a15c2380bddabb9978d3aea6449c18d797e5fc1428da8956c3e739854332b167ac86c7903626fb9882604f03e10b2d678b29a42dbc4f94f61bc966207c479bd2a687307ad55c73a9c8e6e5fd358c162aeab7a520d8d123c41f77bef0a78a41cd4800093bf5673fc838afaa6cf5913286d21ebed6f0dac2ebd4f2d292b64923393117db6b4083daa045235c15564c90487c1d11

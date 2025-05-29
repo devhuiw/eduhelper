@@ -1,141 +1,174 @@
-create table
-    "user" (
-        user_id bigint generated always as identity primary key,
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        first_name varchar(100) not null check (length (first_name) >= 2),
-        last_name varchar(100) not null check (length (last_name) >= 2),
-        middle_name varchar(100) check (length (middle_name) >= 2),
-        email varchar(350) not null check (length (email) >= 5) unique,
-        password varchar(64) not null
-    );
-
-create table
-    "role" (
-        role_id bigint generated always as identity primary key,
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        role_name varchar(150) not null check (length (role_name) >= 3)
-    );
-
-create table
-    "permission" (
-        permission_id bigint generated always as identity primary key,
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        permission_name varchar(150) not null check (length (permission_name) >= 6)
-    );
-
-create table
-    "role_permission" (
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        role_id bigint references role (role_id),
-        permission_id bigint references permission (permission_id),
-        primary key (role_id, permission_id)
-    );
-
-create table
-    "user_role" (
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        role_id bigint references role (role_id),
-        user_id bigint references users (user_id),
-        primary key (role_id, user_id)
-    );
-
-create table
-    "teacher" (
-        user_id bigint references user (user_id) primary key,
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        phone varchar(100) not null check (length (phone) >= 2),
-        working_experience text,
-        education text
-    );
-
-create table
-    "student" (
-        user_id bigint references user (user_id) primary key,
-        phone varchar(100) not null check (length (phone) >= 2),
-        birtday date not null check (birtday >= to_date ('1920-01-01', 'YYYY-MM-DD')),
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        student_group_id bigint references student_group (student_group_id) not null
-    );
-
-create table
-    "academic_year" (
-        academic_year_id bigint generated always as identity primary key,
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        start_with date not null check (
-            start_with <= to_date ('2024-01-01', 'YYYY-MM-DD')
+CREATE TABLE
+    `user` (
+        user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        first_name VARCHAR(100) NOT NULL,
+        last_name VARCHAR(100) NOT NULL,
+        middle_name VARCHAR(100),
+        email VARCHAR(350) NOT NULL UNIQUE,
+        password VARCHAR(64) NOT NULL,
+        CHECK (CHAR_LENGTH(first_name) >= 2),
+        CHECK (CHAR_LENGTH(last_name) >= 2),
+        CHECK (
+            middle_name IS NULL
+            OR CHAR_LENGTH(middle_name) >= 2
         ),
-        ends_with date not null check (ends_with >= to_date ('2024-01-01', 'YYYY-MM-DD'))
+        CHECK (CHAR_LENGTH(email) >= 5)
     );
 
-create table
-    "semester" (
-        semester_id bigint generated always as identity primary key,
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        start_with date not null check (
-            start_with <= to_date ('2024-01-01', 'YYYY-MM-DD')
-        ),
-        ends_with date not null check (ends_with >= to_date ('2024-01-01', 'YYYY-MM-DD')),
-        academic_year_id bigint not null references academic_year (academic_year_id)
+CREATE TABLE
+    `role` (
+        role_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        role_name VARCHAR(150) NOT NULL,
+        CHECK (CHAR_LENGTH(role_name) >= 3)
     );
 
-create table
-    "student_group" (
-        student_group_id bigint generated always as identity primary key,
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        student_group_name varchar(150) not null check (length (student_group_name) >= 3),
-        curator_id bigint not null references user (user_id),
-        academic_year_id bigint not null references academic_year (academic_year_id)
+CREATE TABLE
+    `permission` (
+        permission_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        permission_name VARCHAR(150) NOT NULL,
+        CHECK (CHAR_LENGTH(permission_name) >= 6)
     );
 
-create table
-    "discipline" (
-        discipline_id bigint generated always as identity primary key,
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        discipline_name varchar(155) not null check (length (discipline_name) >= 3),
-        teacher_id bigint not null references user (user_id),
-        student_group_id bigint not null references student_group (student_group_id)
+CREATE TABLE
+    `role_permission` (
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        role_id BIGINT NOT NULL,
+        permission_id BIGINT NOT NULL,
+        PRIMARY KEY (role_id, permission_id),
+        FOREIGN KEY (role_id) REFERENCES role (role_id),
+        FOREIGN KEY (permission_id) REFERENCES permission (permission_id)
     );
 
-create table
-    "grade_journal" (
-        grade_journal_id bigint generated always as identity primary key,
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        student_id bigint not null references student (user_id),
-        grade smallint not null check (grade between 1 and 10),
-        comment text,
-        discipline_id bigint not null references discipline (discipline_id)
+CREATE TABLE
+    `user_role` (
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        role_id BIGINT NOT NULL,
+        user_id BIGINT NOT NULL,
+        PRIMARY KEY (role_id, user_id),
+        FOREIGN KEY (role_id) REFERENCES role (role_id),
+        FOREIGN KEY (user_id) REFERENCES user (user_id)
     );
 
-create table
-    "attendance" (
-        attendance_id bigint generated always as identity primary key,
-        created_at timestamp not null default current_timestamp,
-        visit boolean not null default 'true',
-        comment text,
-        update_at timestamp not null default current_timestamp,
-        student_id bigint not null references student (user_id),
-        discipline_id bigint not null references discipline (discipline_id)
+CREATE TABLE
+    `teacher` (
+        user_id BIGINT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        phone VARCHAR(100) NOT NULL,
+        working_experience TEXT,
+        education TEXT,
+        FOREIGN KEY (user_id) REFERENCES user (user_id),
+        CHECK (CHAR_LENGTH(phone) >= 2)
     );
 
-create table
-    "curriculum" (
-        curriculum_id bigint generated always as identity primary key,
-        created_at timestamp not null default current_timestamp,
-        update_at timestamp not null default current_timestamp,
-        subject_name varchar(150) not null,
-        subject_description text,
-        semester_id bigint references semester (semester_id),
-        discipline_id bigint not null references discipline (discipline_id)
+CREATE TABLE
+    `academic_year` (
+        academic_year_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        start_with DATE NOT NULL,
+        ends_with DATE NOT NULL,
+        CHECK (start_with <= '2024-01-01'),
+        CHECK (ends_with >= '2024-01-01')
+    );
+
+CREATE TABLE
+    `student_group` (
+        student_group_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        student_group_name VARCHAR(150) NOT NULL,
+        curator_id BIGINT NOT NULL,
+        academic_year_id BIGINT NOT NULL,
+        FOREIGN KEY (curator_id) REFERENCES user (user_id),
+        FOREIGN KEY (academic_year_id) REFERENCES academic_year (academic_year_id),
+        CHECK (CHAR_LENGTH(student_group_name) >= 3)
+    );
+
+CREATE TABLE
+    `student` (
+        user_id BIGINT PRIMARY KEY,
+        phone VARCHAR(100) NOT NULL,
+        birtday DATE NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        student_group_id BIGINT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES user (user_id),
+        FOREIGN KEY (student_group_id) REFERENCES student_group (student_group_id),
+        CHECK (CHAR_LENGTH(phone) >= 2),
+        CHECK (birtday >= '1920-01-01')
+    );
+
+CREATE TABLE
+    `semester` (
+        semester_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        start_with DATE NOT NULL,
+        ends_with DATE NOT NULL,
+        academic_year_id BIGINT NOT NULL,
+        FOREIGN KEY (academic_year_id) REFERENCES academic_year (academic_year_id),
+        CHECK (start_with <= '2024-01-01'),
+        CHECK (ends_with >= '2024-01-01')
+    );
+
+CREATE TABLE
+    `discipline` (
+        discipline_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        discipline_name VARCHAR(155) NOT NULL,
+        teacher_id BIGINT NOT NULL,
+        student_group_id BIGINT NOT NULL,
+        FOREIGN KEY (teacher_id) REFERENCES teacher (user_id),
+        FOREIGN KEY (student_group_id) REFERENCES student_group (student_group_id),
+        CHECK (CHAR_LENGTH(discipline_name) >= 3)
+    );
+
+CREATE TABLE
+    `grade_journal` (
+        grade_journal_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        student_id BIGINT NOT NULL,
+        grade SMALLINT NOT NULL,
+        comment TEXT,
+        discipline_id BIGINT NOT NULL,
+        FOREIGN KEY (student_id) REFERENCES student (user_id),
+        FOREIGN KEY (discipline_id) REFERENCES discipline (discipline_id),
+        CHECK (grade BETWEEN 1 AND 10)
+    );
+
+CREATE TABLE
+    `attendance` (
+        attendance_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        visit BOOLEAN NOT NULL DEFAULT TRUE,
+        comment TEXT,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        student_id BIGINT NOT NULL,
+        discipline_id BIGINT NOT NULL,
+        FOREIGN KEY (student_id) REFERENCES student (user_id),
+        FOREIGN KEY (discipline_id) REFERENCES discipline (discipline_id)
+    );
+
+CREATE TABLE
+    `curriculum` (
+        curriculum_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        subject_name VARCHAR(150) NOT NULL,
+        subject_description TEXT,
+        semester_id BIGINT,
+        discipline_id BIGINT NOT NULL,
+        FOREIGN KEY (semester_id) REFERENCES semester (semester_id),
+        FOREIGN KEY (discipline_id) REFERENCES discipline (discipline_id)
     );

@@ -9,9 +9,18 @@ import (
 )
 
 type Config struct {
-	Env         string `yaml:"env" env:"ENV" env-required:"true"`
-	StoragePath string `yaml:"storage_path" env-required:"true"`
-	HTTPServer  `yaml:"http_server"`
+	Env        string `yaml:"env" env:"ENV" env-required:"true"`
+	SQLPath    `yaml:"sql_path" env-required:"true"`
+	HTTPServer `yaml:"http_server"`
+	JwtSecret  string `yaml:"jwt-secret" env-required:"true"`
+}
+
+type SQLPath struct {
+	User     string `yaml:"user" env-required:"true"`
+	Password string `yaml:"password" env-required:"true"`
+	Host     string `yaml:"host" env-default:"localhost"`
+	Port     int    `yaml:"port" env-default:"3306"`
+	DBName   string `yaml:"db_name" env-required:"true"`
 }
 
 type HTTPServer struct {

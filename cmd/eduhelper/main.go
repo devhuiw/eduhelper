@@ -3,14 +3,13 @@ package main
 import (
 	"log/slog"
 	"os"
-	"service/internel/config"
-	"service/internel/http-server/middleware/logger"
-	"service/internel/lib/logger/handlers/slogpretty"
-	"service/internel/lib/logger/sl"
-	"service/internel/storage/sqlite"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"os/signal"
+	"service/internal/config"
+	"service/internal/http-server/handler"
+	"service/internal/lib/logger/handlers/slogpretty"
+	"service/internal/lib/logger/sl"
+	"service/internal/storage/mysql"
+	"syscall"
 )
 
 const (
@@ -27,22 +26,31 @@ func main() {
 	log.Info("starting edu-helper", slog.String("env", cfg.Env))
 	log.Debug("debug messages are enabled")
 
-	storage, err := sqlite.New(cfg.StoragePath)
+	storage, err := mysql.New(cfg.SQLPath)
 	if err != nil {
 		log.Error("failed to init storage", sl.Err(err))
 		os.Exit(1)
 	}
 
-	_ = storage
+	srv, err := handler.NewServer(log, cfg, storage)
+	if err != nil {
+		log.Error("failed to init http server", sl.Err(err))
+		os.Exit(1)
+	}
 
-	router := chi.NewRouter()
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	router.Use(middleware.RequestID)
-	router.Use(middleware.Logger)
-	router.Use(logger.New(log))
-	router.Use(middleware.Recoverer)
-	router.Use(middleware.URLFormat)
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Error("failed to start server")
+		}
+	}()
 
+	log.Info("server started")
+
+	<-done
+	log.Info("stopping server")
 }
 
 func setupLogger(env string) *slog.Logger {
