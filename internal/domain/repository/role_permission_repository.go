@@ -7,21 +7,15 @@ import (
 	"time"
 )
 
-type RolePermissionRepository interface {
-	AssignPermission(ctx context.Context, roleID, permissionID int64) error
-	RemovePermission(ctx context.Context, roleID, permissionID int64) error
-	GetPermissionsByRoleID(ctx context.Context, roleID int64) ([]*models.Permission, error)
-}
-
-type rolePermissionRepository struct {
+type RolePermissionRepository struct {
 	db *sql.DB
 }
 
-func NewRolePermissionRepository(db *sql.DB) RolePermissionRepository {
-	return &rolePermissionRepository{db: db}
+func NewRolePermissionRepository(db *sql.DB) *RolePermissionRepository {
+	return &RolePermissionRepository{db: db}
 }
 
-func (r *rolePermissionRepository) AssignPermission(ctx context.Context, roleID, permissionID int64) error {
+func (r *RolePermissionRepository) AssignPermission(ctx context.Context, roleID, permissionID int64) error {
 	_, err := r.db.ExecContext(ctx,
 		`INSERT INTO role_permissions (role_id, permission_id, created_at, update_at)
 		 VALUES ($1, $2, $3, $3)
@@ -31,7 +25,7 @@ func (r *rolePermissionRepository) AssignPermission(ctx context.Context, roleID,
 	return err
 }
 
-func (r *rolePermissionRepository) RemovePermission(ctx context.Context, roleID, permissionID int64) error {
+func (r *RolePermissionRepository) RemovePermission(ctx context.Context, roleID, permissionID int64) error {
 	_, err := r.db.ExecContext(ctx,
 		`DELETE FROM role_permissions WHERE role_id = $1 AND permission_id = $2`,
 		roleID, permissionID,
@@ -39,7 +33,7 @@ func (r *rolePermissionRepository) RemovePermission(ctx context.Context, roleID,
 	return err
 }
 
-func (r *rolePermissionRepository) GetPermissionsByRoleID(ctx context.Context, roleID int64) ([]*models.Permission, error) {
+func (r *RolePermissionRepository) GetPermissionsByRoleID(ctx context.Context, roleID int64) ([]*models.Permission, error) {
 	rows, err := r.db.QueryContext(ctx,
 		`SELECT p.permission_id, p.permission_name, p.created_at, p.update_at
 		 FROM permissions p

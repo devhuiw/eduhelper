@@ -7,24 +7,15 @@ import (
 	"time"
 )
 
-type PermissionRepository interface {
-	CreatePermission(ctx context.Context, permission *models.Permission) error
-	GetPermissionByID(ctx context.Context, id int64) (*models.Permission, error)
-	GetPermissionByName(ctx context.Context, name string) (*models.Permission, error)
-	UpdatePermission(ctx context.Context, permission *models.Permission) error
-	DeletePermission(ctx context.Context, id int64) error
-	ListPermission(ctx context.Context, limit, offset int) ([]*models.Permission, error)
-}
-
-type permissionRepository struct {
+type PermissionRepository struct {
 	db *sql.DB
 }
 
-func NewPermissionRepository(db *sql.DB) PermissionRepository {
-	return &permissionRepository{db: db}
+func NewPermissionRepository(db *sql.DB) *PermissionRepository {
+	return &PermissionRepository{db: db}
 }
 
-func (r *permissionRepository) CreatePermission(ctx context.Context, permission *models.Permission) error {
+func (r *PermissionRepository) CreatePermission(ctx context.Context, permission *models.Permission) error {
 	query := `
 		INSERT INTO permissions (permission_name, created_at, update_at)
 		VALUES ($1, $2, $2)
@@ -35,7 +26,7 @@ func (r *permissionRepository) CreatePermission(ctx context.Context, permission 
 	return err
 }
 
-func (r *permissionRepository) GetPermissionByID(ctx context.Context, id int64) (*models.Permission, error) {
+func (r *PermissionRepository) GetPermissionByID(ctx context.Context, id int64) (*models.Permission, error) {
 	query := `
 		SELECT permission_id, permission_name, created_at, update_at
 		FROM permissions
@@ -54,7 +45,7 @@ func (r *permissionRepository) GetPermissionByID(ctx context.Context, id int64) 
 	return &perm, nil
 }
 
-func (r *permissionRepository) GetPermissionByName(ctx context.Context, name string) (*models.Permission, error) {
+func (r *PermissionRepository) GetPermissionByName(ctx context.Context, name string) (*models.Permission, error) {
 	query := `
 		SELECT permission_id, permission_name, created_at, update_at
 		FROM permissions
@@ -73,7 +64,7 @@ func (r *permissionRepository) GetPermissionByName(ctx context.Context, name str
 	return &perm, nil
 }
 
-func (r *permissionRepository) UpdatePermission(ctx context.Context, permission *models.Permission) error {
+func (r *PermissionRepository) UpdatePermission(ctx context.Context, permission *models.Permission) error {
 	query := `
 		UPDATE permissions
 		SET permission_name = $1, update_at = $2
@@ -83,13 +74,13 @@ func (r *permissionRepository) UpdatePermission(ctx context.Context, permission 
 	return err
 }
 
-func (r *permissionRepository) DeletePermission(ctx context.Context, id int64) error {
+func (r *PermissionRepository) DeletePermission(ctx context.Context, id int64) error {
 	query := `DELETE FROM permissions WHERE permission_id = $1`
 	_, err := r.db.ExecContext(ctx, query, id)
 	return err
 }
 
-func (r *permissionRepository) ListPermission(ctx context.Context, limit, offset int) ([]*models.Permission, error) {
+func (r *PermissionRepository) ListPermission(ctx context.Context, limit, offset int) ([]*models.Permission, error) {
 	query := `
 		SELECT permission_id, permission_name, created_at, update_at
 		FROM permissions

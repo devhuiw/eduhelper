@@ -2,12 +2,16 @@ package v1
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"log/slog"
 	"net/http"
 	"service/internal/domain/models"
 	resp "service/internal/lib/api/response"
+	"strconv"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
 )
@@ -31,7 +35,6 @@ type assignPermissionInput struct {
 	PermissionID int64 `json:"permission_id"`
 }
 
-// POST /api/v1/role-permissions/assign
 func (h *RolePermissionHandler) AssignPermission(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.rolepermission.AssignPermission"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +57,6 @@ func (h *RolePermissionHandler) AssignPermission(log *slog.Logger) http.HandlerF
 	}
 }
 
-// POST /api/v1/role-permissions/remove
 func (h *RolePermissionHandler) RemovePermission(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.rolepermission.RemovePermission"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -74,5 +76,39 @@ func (h *RolePermissionHandler) RemovePermission(log *slog.Logger) http.HandlerF
 		}
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, resp.OK())
+	}
+}
+
+func (h RolePermissionHandler) GetPermissionsByRoleID(log *slog.Logger) http.HandlerFunc {
+	const op = "handler.v1.rolepermission.GetPermissionsByRoleID"
+	return func(w http.ResponseWriter, r *http.Request) {
+		log.With(
+			slog.String("op", op),
+			slog.String("request_id", middleware.GetReqID(r.Context())),
+		)
+
+		idStr := chi.URLParam(r, "id")
+		role_id, err := strconv.ParseInt(idStr, 10, 64)
+		if err != nil {
+			log.Info("invalid role id", slog.String("id", idStr))
+			w.WriteHeader(http.StatusBadRequest)
+			render.JSON(w, r, resp.Error("invalid role id"))
+			return
+		}
+		permissions, err := h.repo.GetPermissionsByRoleID(r.Context(), role_id)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				log.Info("permissions for role id not found", slog.Any("permissions", permissions))
+				w.WriteHeader(http.StatusNotFound)
+				render.JSON(w, r, resp.Error("permissions for role id not found"))
+				return
+			}
+			log.Error("failed to get permissions for role", slog.String("err", err.Error()))
+			w.WriteHeader(http.StatusInternalServerError)
+			render.JSON(w, r, resp.Error("failed to get permissions for role"))
+			return
+		}
+
+		render.JSON(w, r, permissions)
 	}
 }

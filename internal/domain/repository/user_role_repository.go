@@ -7,21 +7,15 @@ import (
 	"time"
 )
 
-type UserRoleRepository interface {
-	AssignRole(ctx context.Context, userID, roleID int64) error
-	RemoveRole(ctx context.Context, userID, roleID int64) error
-	GetRolesByUserID(ctx context.Context, userID int64) ([]*models.UserRole, error)
-}
-
-type userRoleRepository struct {
+type UserRoleRepository struct {
 	db *sql.DB
 }
 
-func NewUserRoleRepository(db *sql.DB) UserRoleRepository {
-	return &userRoleRepository{db: db}
+func NewUserRoleRepository(db *sql.DB) *UserRoleRepository {
+	return &UserRoleRepository{db: db}
 }
 
-func (r *userRoleRepository) AssignRole(ctx context.Context, userID, roleID int64) error {
+func (r *UserRoleRepository) AssignRole(ctx context.Context, userID, roleID int64) error {
 	_, err := r.db.ExecContext(ctx,
 		`INSERT INTO user_roles (user_id, role_id, created_at, update_at)
 		 VALUES ($1, $2, $3, $3)
@@ -34,13 +28,13 @@ func (r *userRoleRepository) AssignRole(ctx context.Context, userID, roleID int6
 	return nil
 }
 
-func (r *userRoleRepository) RemoveRole(ctx context.Context, userID, roleID int64) error {
+func (r *UserRoleRepository) RemoveRole(ctx context.Context, userID, roleID int64) error {
 	_, err := r.db.ExecContext(ctx,
 		`DELETE FROM user_roles WHERE user_id = $1 AND role_id = $2`, userID, roleID)
 	return err
 }
 
-func (r *userRoleRepository) GetRolesByUserID(ctx context.Context, userID int64) ([]*models.UserRole, error) {
+func (r *UserRoleRepository) GetRolesByUserID(ctx context.Context, userID int64) ([]*models.UserRole, error) {
 	rows, err := r.db.QueryContext(ctx,
 		`SELECT created_at, update_at, role_id, user_id
 		 FROM user_roles

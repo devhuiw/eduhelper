@@ -12,16 +12,16 @@ import (
 )
 
 type RBACMiddleware struct {
-	userRoleRepo   repository.UserRoleRepository
-	rolePermRepo   repository.RolePermissionRepository
-	permissionRepo repository.PermissionRepository
+	userRoleRepo   *repository.UserRoleRepository
+	rolePermRepo   *repository.RolePermissionRepository
+	permissionRepo *repository.PermissionRepository
 	logger         *slog.Logger
 }
 
 func NewRBACMiddleware(
-	userRoleRepo repository.UserRoleRepository,
-	rolePermRepo repository.RolePermissionRepository,
-	permissionRepo repository.PermissionRepository,
+	userRoleRepo *repository.UserRoleRepository,
+	rolePermRepo *repository.RolePermissionRepository,
+	permissionRepo *repository.PermissionRepository,
 	logger *slog.Logger,
 ) *RBACMiddleware {
 	return &RBACMiddleware{

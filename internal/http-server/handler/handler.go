@@ -55,6 +55,12 @@ func NewServer(
 	rolePermissionRepository := repository.NewRolePermissionRepository(db)
 	rolePermissionHandler := v1.NewRolePermissionHandler(rolePermissionRepository)
 
+	studentRepository := repository.NewStudentRepository(db)
+	studentHandler := v1.NewStudentHandler(studentRepository)
+
+	studentGroupRepository := repository.NewStudentGroupRepository(db)
+	studentGroupHandler := v1.NewStudentGroupHandler(studentGroupRepository)
+
 	router.Route("/api/v1", func(r chi.Router) {
 		r.Post("/register", authHandler.Register(log))
 		r.Post("/login", authHandler.Login(log))
@@ -81,6 +87,26 @@ func NewServer(
 			rr.With(rbacMiddleware.RequirePermission("teacher:delete")).Delete("/{id}", teacherHandler.DeleteTeacher(log))
 		})
 
+		r.Route("/api/v1/students", func(rr chi.Router) {
+			rr.With(rbacMiddleware.RequirePermission("student:create")).Post("/", studentHandler.CreateStudent(log))
+			rr.With(rbacMiddleware.RequirePermission("student:view")).Get("/{id}", studentHandler.GetStudentByID(log))
+			rr.With(rbacMiddleware.RequirePermission("student:update")).Put("/{id}", studentHandler.UpdateStudent(log))
+			rr.With(rbacMiddleware.RequirePermission("student:delete")).Delete("/{id}", studentHandler.DeleteStudent(log))
+			rr.With(rbacMiddleware.RequirePermission("student:list")).Get("/", studentHandler.ListStudent(log))
+			rr.With(rbacMiddleware.RequirePermission("student:view_public")).Get("/public/{id}", studentHandler.GetStudentPublicByID(log))
+			rr.With(rbacMiddleware.RequirePermission("student:list_public")).Get("/public", studentHandler.ListStudentPublic(log))
+		})
+
+		r.Route("/api/v1/student-groups", func(rr chi.Router) {
+			rr.With(rbacMiddleware.RequirePermission("studentgroup:create")).Post("/", studentGroupHandler.CreateStudentGroup(log))
+			rr.With(rbacMiddleware.RequirePermission("studentgroup:view")).Get("/{id}", studentGroupHandler.GetStudentGroupByID(log))
+			rr.With(rbacMiddleware.RequirePermission("studentgroup:update")).Put("/{id}", studentGroupHandler.UpdateStudentGroup(log))
+			rr.With(rbacMiddleware.RequirePermission("studentgroup:delete")).Delete("/{id}", studentGroupHandler.DeleteStudentGroup(log))
+			rr.With(rbacMiddleware.RequirePermission("studentgroup:list")).Get("/", studentGroupHandler.ListStudentGroups(log))
+			rr.With(rbacMiddleware.RequirePermission("studentgroup:view_public")).Get("/public/{id}", studentGroupHandler.GetStudentGroupPublicByID(log))
+			rr.With(rbacMiddleware.RequirePermission("studentgroup:list_public")).Get("/public", studentGroupHandler.ListStudentGroupPublic(log))
+		})
+
 		r.Route("/api/v1/permissions", func(rr chi.Router) {
 			rr.With(rbacMiddleware.RequirePermission("permission:list")).Get("/", permissionHandler.ListPermissions(log))
 			rr.With(rbacMiddleware.RequirePermission("permission:create")).Post("/", permissionHandler.CreatePermission(log))
@@ -100,13 +126,13 @@ func NewServer(
 		r.Route("/api/v1/user-roles", func(rr chi.Router) {
 			rr.With(rbacMiddleware.RequirePermission("userrole:assign")).Post("/assign", userRoleHandler.AssignRole(log))
 			rr.With(rbacMiddleware.RequirePermission("userrole:remove")).Post("/remove", userRoleHandler.RemoveRole(log))
-			// TODO: GET для просмотра ролей пользователя
+			rr.With(rbacMiddleware.RequirePermission("userrole:view")).Get("/{id}", userRoleHandler.GetRolesByUserID(log))
 		})
 
 		r.Route("/api/v1/role-permissions", func(rr chi.Router) {
 			rr.With(rbacMiddleware.RequirePermission("rolepermission:assign")).Post("/assign", rolePermissionHandler.AssignPermission(log))
 			rr.With(rbacMiddleware.RequirePermission("rolepermission:remove")).Post("/remove", rolePermissionHandler.RemovePermission(log))
-			// TODO: GET для просмотра прав роли
+			rr.With(rbacMiddleware.RequirePermission("rolepermission:view")).Get("/{id}", rolePermissionHandler.GetPermissionsByRoleID(log))
 		})
 	})
 

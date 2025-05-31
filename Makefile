@@ -2,6 +2,9 @@ BINARY_NAME=edu-helper
 SRC_EDUHELPER=./cmd/eduhelper
 SRC_MIGRATOR=./cmd/migrator
 MIGRATIONS_PATH=./migrations
+CONFIG_PATH=./config/
+
+CONFIG_FILE?=local.yaml
 
 user?=root
 password?=
@@ -21,7 +24,7 @@ build:
 	go build -o bin/$(BINARY_NAME) $(SRC_EDUHELPER)
 
 run:
-	go run $(SRC_EDUHELPER)
+	go run $(SRC_EDUHELPER) -config='$(CONFIG_PATH)/$(CONFIG_FILE)'
 
 test:
 	go test ./...

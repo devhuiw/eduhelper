@@ -7,23 +7,15 @@ import (
 	"time"
 )
 
-type RoleRepository interface {
-	CreateRole(ctx context.Context, role *models.Role) (int64, error)
-	GetRoleByID(ctx context.Context, id int64) (*models.Role, error)
-	GetRoleByName(ctx context.Context, name string) (*models.Role, error)
-	UpdateRole(ctx context.Context, role *models.Role) error
-	DeleteRole(ctx context.Context, id int64) error
-	ListRole(ctx context.Context) ([]*models.Role, error)
-}
-type roleRepository struct {
+type RoleRepository struct {
 	db *sql.DB
 }
 
-func NewRoleRepository(db *sql.DB) RoleRepository {
-	return &roleRepository{db: db}
+func NewRoleRepository(db *sql.DB) *RoleRepository {
+	return &RoleRepository{db: db}
 }
 
-func (r *roleRepository) CreateRole(ctx context.Context, role *models.Role) (int64, error) {
+func (r *RoleRepository) CreateRole(ctx context.Context, role *models.Role) (int64, error) {
 	query := `
 		INSERT INTO roles (role_name, created_at, update_at)
 		VALUES ($1, $2, $3)
@@ -38,7 +30,7 @@ func (r *roleRepository) CreateRole(ctx context.Context, role *models.Role) (int
 	return id, nil
 }
 
-func (r *roleRepository) GetRoleByID(ctx context.Context, id int64) (*models.Role, error) {
+func (r *RoleRepository) GetRoleByID(ctx context.Context, id int64) (*models.Role, error) {
 	query := `
 		SELECT role_id, role_name, created_at, update_at
 		FROM roles
@@ -57,7 +49,7 @@ func (r *roleRepository) GetRoleByID(ctx context.Context, id int64) (*models.Rol
 	return &role, nil
 }
 
-func (r *roleRepository) GetRoleByName(ctx context.Context, name string) (*models.Role, error) {
+func (r *RoleRepository) GetRoleByName(ctx context.Context, name string) (*models.Role, error) {
 	query := `
 		SELECT role_id, role_name, created_at, update_at
 		FROM roles
@@ -76,7 +68,7 @@ func (r *roleRepository) GetRoleByName(ctx context.Context, name string) (*model
 	return &role, nil
 }
 
-func (r *roleRepository) UpdateRole(ctx context.Context, role *models.Role) error {
+func (r *RoleRepository) UpdateRole(ctx context.Context, role *models.Role) error {
 	query := `
 		UPDATE roles
 		SET role_name = $1, update_at = $2
@@ -86,13 +78,13 @@ func (r *roleRepository) UpdateRole(ctx context.Context, role *models.Role) erro
 	return err
 }
 
-func (r *roleRepository) DeleteRole(ctx context.Context, id int64) error {
+func (r *RoleRepository) DeleteRole(ctx context.Context, id int64) error {
 	query := `DELETE FROM roles WHERE role_id = $1`
 	_, err := r.db.ExecContext(ctx, query, id)
 	return err
 }
 
-func (r *roleRepository) ListRole(ctx context.Context) ([]*models.Role, error) {
+func (r *RoleRepository) ListRole(ctx context.Context) ([]*models.Role, error) {
 	query := `
 		SELECT role_id, role_name, created_at, update_at
 		FROM roles
