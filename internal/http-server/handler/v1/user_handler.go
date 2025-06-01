@@ -34,7 +34,16 @@ func NewUserHandler(repo UserRepository) *UserHandler {
 	return &UserHandler{repo: repo}
 }
 
-// POST /api/v1/users
+// @Summary Создать пользователя
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param input body models.User true "Пользователь"
+// @Success 201 {object} models.User
+// @Failure 400 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/users [post]
+// @Security BearerAuth
 func (h *UserHandler) CreateUser(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.user_handler.CreateUser"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +69,17 @@ func (h *UserHandler) CreateUser(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
-// GET /api/v1/users/{id}
+// @Summary Получить пользователя по ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "ID пользователя"
+// @Success 200 {object} models.User
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/users/{id} [get]
+// @Security BearerAuth
 func (h *UserHandler) GetUserByID(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.user.GetUserByID"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -93,7 +112,18 @@ func (h *UserHandler) GetUserByID(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
-// PUT /api/v1/users/{id}
+// @Summary Обновить пользователя
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "ID пользователя"
+// @Param input body models.User true "Пользователь"
+// @Success 200 {object} models.User
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/users/{id} [put]
+// @Security BearerAuth
 func (h *UserHandler) UpdateUser(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.user.UpdateUser"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -134,7 +164,17 @@ func (h *UserHandler) UpdateUser(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
-// DELETE /api/v1/users/{id}
+// @Summary Удалить пользователя
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "ID пользователя"
+// @Success 204 {string} string "No Content"
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/users/{id} [delete]
+// @Security BearerAuth
 func (h *UserHandler) DeleteUser(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.user.DeleteUser"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -166,7 +206,16 @@ func (h *UserHandler) DeleteUser(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
-// GET /api/v1/users?limit=10&offset=0
+// @Summary Получить список пользователей
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param limit query int false "Ограничение"
+// @Param offset query int false "Смещение"
+// @Success 200 {array} models.User
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/users [get]
+// @Security BearerAuth
 func (h *UserHandler) ListUsers(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.user.ListUsers"
 	return func(w http.ResponseWriter, r *http.Request) {

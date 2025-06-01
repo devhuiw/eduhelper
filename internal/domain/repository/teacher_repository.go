@@ -18,7 +18,7 @@ func NewTeacherRepository(db *sql.DB) *TeacherRepository {
 
 func (r *TeacherRepository) CreateTeacher(ctx context.Context, teacher *models.Teacher) error {
 	query := `
-		INSERT INTO teacher (user_id, phone, working_experience, education, created_at, update_at)
+		INSERT INTO teacher (user_id, phone, working_experience, education, created_at, updated_at)
 		VALUES (?, ?, ?, ?, ?, ?)
 	`
 	now := time.Now()
@@ -94,7 +94,7 @@ func (r *TeacherRepository) GetTeacherPublicByID(ctx context.Context, userID int
 func (r *TeacherRepository) UpdateTeacher(ctx context.Context, teacher *models.Teacher) error {
 	query := `
 		UPDATE teacher SET
-			phone = ?, working_experience = ?, education = ?, update_at = ?
+			phone = ?, working_experience = ?, education = ?, updated_at = ?
 		WHERE user_id = ?
 	`
 	_, err := r.db.ExecContext(

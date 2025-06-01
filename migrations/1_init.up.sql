@@ -2,7 +2,7 @@ CREATE TABLE
     `user` (
         user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         first_name VARCHAR(100) NOT NULL,
         last_name VARCHAR(100) NOT NULL,
         middle_name VARCHAR(100),
@@ -18,42 +18,42 @@ CREATE TABLE
     );
 
 CREATE TABLE
-    `role` (
+    `roles` (
         role_id BIGINT AUTO_INCREMENT PRIMARY KEY,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         role_name VARCHAR(150) NOT NULL,
         CHECK (CHAR_LENGTH(role_name) >= 3)
     );
 
 CREATE TABLE
-    `permission` (
+    `permissions` (
         permission_id BIGINT AUTO_INCREMENT PRIMARY KEY,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         permission_name VARCHAR(150) NOT NULL,
         CHECK (CHAR_LENGTH(permission_name) >= 6)
     );
 
 CREATE TABLE
-    `role_permission` (
+    `role_permissions` (
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         role_id BIGINT NOT NULL,
         permission_id BIGINT NOT NULL,
         PRIMARY KEY (role_id, permission_id),
-        FOREIGN KEY (role_id) REFERENCES role (role_id),
-        FOREIGN KEY (permission_id) REFERENCES permission (permission_id)
+        FOREIGN KEY (role_id) REFERENCES roles (role_id),
+        FOREIGN KEY (permission_id) REFERENCES permissions (permission_id)
     );
 
 CREATE TABLE
-    `user_role` (
+    `user_roles` (
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         role_id BIGINT NOT NULL,
         user_id BIGINT NOT NULL,
         PRIMARY KEY (role_id, user_id),
-        FOREIGN KEY (role_id) REFERENCES role (role_id),
+        FOREIGN KEY (role_id) REFERENCES roles (role_id),
         FOREIGN KEY (user_id) REFERENCES user (user_id)
     );
 
@@ -61,7 +61,7 @@ CREATE TABLE
     `teacher` (
         user_id BIGINT PRIMARY KEY,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         phone VARCHAR(100) NOT NULL,
         working_experience TEXT,
         education TEXT,
@@ -72,8 +72,9 @@ CREATE TABLE
 CREATE TABLE
     `academic_year` (
         academic_year_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        name_academic_year VARCHAR(155) NOT NULL,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         start_with DATE NOT NULL,
         ends_with DATE NOT NULL,
         CHECK (start_with <= '2024-01-01'),
@@ -84,7 +85,7 @@ CREATE TABLE
     `student_group` (
         student_group_id BIGINT AUTO_INCREMENT PRIMARY KEY,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         student_group_name VARCHAR(150) NOT NULL,
         curator_id BIGINT NOT NULL,
         academic_year_id BIGINT NOT NULL,
@@ -99,7 +100,7 @@ CREATE TABLE
         phone VARCHAR(100) NOT NULL,
         birtday DATE NOT NULL,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         student_group_id BIGINT NOT NULL,
         FOREIGN KEY (user_id) REFERENCES user (user_id),
         FOREIGN KEY (student_group_id) REFERENCES student_group (student_group_id),
@@ -111,7 +112,7 @@ CREATE TABLE
     `semester` (
         semester_id BIGINT AUTO_INCREMENT PRIMARY KEY,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         start_with DATE NOT NULL,
         ends_with DATE NOT NULL,
         academic_year_id BIGINT NOT NULL,
@@ -124,7 +125,7 @@ CREATE TABLE
     `discipline` (
         discipline_id BIGINT AUTO_INCREMENT PRIMARY KEY,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         discipline_name VARCHAR(155) NOT NULL,
         teacher_id BIGINT NOT NULL,
         student_group_id BIGINT NOT NULL,
@@ -137,7 +138,7 @@ CREATE TABLE
     `grade_journal` (
         grade_journal_id BIGINT AUTO_INCREMENT PRIMARY KEY,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         student_id BIGINT NOT NULL,
         grade SMALLINT NOT NULL,
         comment TEXT,
@@ -153,7 +154,7 @@ CREATE TABLE
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         visit BOOLEAN NOT NULL DEFAULT TRUE,
         comment TEXT,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         student_id BIGINT NOT NULL,
         discipline_id BIGINT NOT NULL,
         FOREIGN KEY (student_id) REFERENCES student (user_id),
@@ -164,7 +165,7 @@ CREATE TABLE
     `curriculum` (
         curriculum_id BIGINT AUTO_INCREMENT PRIMARY KEY,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         subject_name VARCHAR(150) NOT NULL,
         subject_description TEXT,
         semester_id BIGINT,

@@ -34,6 +34,16 @@ func NewStudentHandler(repo StudentRepository) *StudentHandler {
 	return &StudentHandler{repo: repo}
 }
 
+// @Summary Создать студента
+// @Tags students
+// @Accept json
+// @Produce json
+// @Param input body models.Student true "Студент"
+// @Success 201 {object} models.Student
+// @Failure 400 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/students [post]
+// @Security BearerAuth
 func (h *StudentHandler) CreateStudent(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.student_handler.CreateStudent"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -59,6 +69,17 @@ func (h *StudentHandler) CreateStudent(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Получить студента по ID
+// @Tags students
+// @Accept json
+// @Produce json
+// @Param id path int true "ID студента"
+// @Success 200 {object} models.Student
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/students/{id} [get]
+// @Security BearerAuth
 func (h *StudentHandler) GetStudentByID(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.student_handler.GetStudentByID"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -91,6 +112,15 @@ func (h *StudentHandler) GetStudentByID(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Получить публичного студента по ID
+// @Tags students
+// @Accept json
+// @Produce json
+// @Param id path int true "ID студента"
+// @Success 200 {object} models.StudentPublic
+// @Failure 404 {object} resp.Response
+// @Router /api/v1/students/public/{id} [get]
+// @Security BearerAuth
 func (h *StudentHandler) GetStudentPublicByID(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.student_handler.GetStudentPublicByID"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -123,6 +153,18 @@ func (h *StudentHandler) GetStudentPublicByID(log *slog.Logger) http.HandlerFunc
 	}
 }
 
+// @Summary Обновить данные студента
+// @Tags students
+// @Accept json
+// @Produce json
+// @Param id path int true "ID студента"
+// @Param input body models.Student true "Студент"
+// @Success 200 {object} models.Student
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/students/{id} [put]
+// @Security BearerAuth
 func (h *StudentHandler) UpdateStudent(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.student_handler.UpdateStudent"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -163,6 +205,17 @@ func (h *StudentHandler) UpdateStudent(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Удалить студента
+// @Tags students
+// @Accept json
+// @Produce json
+// @Param id path int true "ID студента"
+// @Success 204 {string} string "No Content"
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/students/{id} [delete]
+// @Security BearerAuth
 func (h *StudentHandler) DeleteStudent(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.student_handler.DeleteStudent"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -194,6 +247,16 @@ func (h *StudentHandler) DeleteStudent(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Получить список студентов
+// @Tags students
+// @Accept json
+// @Produce json
+// @Param limit query int false "Ограничение"
+// @Param offset query int false "Смещение"
+// @Success 200 {array} models.Student
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/students [get]
+// @Security BearerAuth
 func (h *StudentHandler) ListStudent(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.student_handler.ListStudent"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -217,6 +280,15 @@ func (h *StudentHandler) ListStudent(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Получить публичный список студентов
+// @Tags students
+// @Accept json
+// @Produce json
+// @Param limit query int false "Ограничение"
+// @Param offset query int false "Смещение"
+// @Success 200 {array} models.StudentPublic
+// @Router /api/v1/students/public [get]
+// @Security BearerAuth
 func (h *StudentHandler) ListStudentPublic(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.student_handler.ListStudentPublic"
 	return func(w http.ResponseWriter, r *http.Request) {

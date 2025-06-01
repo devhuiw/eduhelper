@@ -1,0 +1,2653 @@
+definitions:
+  internal_http-server_handler_v1.assignPermissionInput:
+    properties:
+      permission_id:
+        type: integer
+      role_id:
+        type: integer
+    type: object
+  internal_http-server_handler_v1.assignRoleInput:
+    properties:
+      role_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  service_internal_domain_models.AcademicYear:
+    properties:
+      academic_year_id:
+        type: integer
+      created_at:
+        type: string
+      ends_with:
+        type: string
+      name_academic_year:
+        type: string
+      start_with:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  service_internal_domain_models.Attendance:
+    properties:
+      attendance_id:
+        type: integer
+      comment:
+        type: string
+      created_at:
+        type: string
+      discipline_id:
+        type: integer
+      student_id:
+        type: integer
+      updated_at:
+        type: string
+      visit:
+        type: boolean
+    type: object
+  service_internal_domain_models.Curriculum:
+    properties:
+      created_at:
+        type: string
+      curriculum_id:
+        type: integer
+      discipline_id:
+        type: integer
+      semester_id:
+        type: integer
+      subject_description:
+        type: string
+      subject_name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  service_internal_domain_models.Discipline:
+    properties:
+      created_at:
+        type: string
+      discipline_id:
+        type: integer
+      discipline_name:
+        type: string
+      student_group_id:
+        type: integer
+      teacher_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  service_internal_domain_models.DisciplinePublic:
+    properties:
+      academic_year_id:
+        type: integer
+      created_at:
+        type: string
+      curator_first_name:
+        type: string
+      curator_id:
+        type: integer
+      curator_last_name:
+        type: string
+      curator_middle_name:
+        type: string
+      discipline_id:
+        type: integer
+      discipline_name:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      middle_name:
+        type: string
+      student_group_id:
+        type: integer
+      student_group_name:
+        type: string
+      teacher_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  service_internal_domain_models.GradeJournal:
+    properties:
+      comment:
+        type: string
+      created_at:
+        type: string
+      discipline_id:
+        type: integer
+      grade:
+        type: integer
+      grade_journal_id:
+        type: integer
+      student_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  service_internal_domain_models.GradeJournalPublic:
+    properties:
+      comment:
+        type: string
+      created_at:
+        type: string
+      discipline_id:
+        type: integer
+      discipline_name:
+        type: string
+      first_name:
+        type: string
+      grade:
+        type: integer
+      grade_journal_id:
+        type: integer
+      last_name:
+        type: string
+      student_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  service_internal_domain_models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  service_internal_domain_models.Permission:
+    properties:
+      created_at:
+        type: string
+      permission_id:
+        type: integer
+      permission_name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  service_internal_domain_models.RegisterRequest:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      middle_name:
+        type: string
+      password:
+        type: string
+    type: object
+  service_internal_domain_models.Role:
+    properties:
+      created_at:
+        type: string
+      role_id:
+        type: integer
+      role_name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  service_internal_domain_models.Semester:
+    properties:
+      academic_year_id:
+        type: integer
+      created_at:
+        type: string
+      ends_with:
+        type: string
+      semester_id:
+        type: integer
+      start_with:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  service_internal_domain_models.Student:
+    properties:
+      birthday:
+        type: string
+      created_at:
+        type: string
+      phone:
+        type: string
+      student_group_id:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  service_internal_domain_models.StudentGroup:
+    properties:
+      academic_year_id:
+        type: integer
+      created_at:
+        type: string
+      curator_id:
+        type: integer
+      student_group_id:
+        type: integer
+      student_group_name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  service_internal_domain_models.StudentGroupPublic:
+    properties:
+      academic_year_id:
+        type: integer
+      curator_first_name:
+        type: string
+      curator_id:
+        type: integer
+      curator_last_name:
+        type: string
+      curator_middle_name:
+        type: string
+      student_group_id:
+        type: integer
+      student_group_name:
+        type: string
+    type: object
+  service_internal_domain_models.StudentPublic:
+    properties:
+      birthday:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      middle_name:
+        type: string
+      student_group_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  service_internal_domain_models.Teacher:
+    properties:
+      created_at:
+        type: string
+      education:
+        type: string
+      phone:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+      working_experience:
+        type: string
+    type: object
+  service_internal_domain_models.TeacherPublic:
+    properties:
+      education:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      middle_name:
+        type: string
+      user_id:
+        type: integer
+      working_experience:
+        type: string
+    type: object
+  service_internal_domain_models.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      middle_name:
+        type: string
+      password:
+        items:
+          type: integer
+        type: array
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  service_internal_domain_models.UserRole:
+    properties:
+      created_at:
+        type: string
+      role_id:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  service_internal_lib_api_response.Response:
+    properties:
+      error:
+        type: string
+      status:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: API Support
+  description: Полная документация API для электронного дневника
+  license:
+    name: MIT
+  title: API системы электронного дневника
+  version: "1.0"
+paths:
+  /api/v1/academic-years:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.AcademicYear'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить список учебных годов
+      tags:
+      - academic-years
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Учебный год
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.AcademicYear'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.AcademicYear'
+      security:
+      - BearerAuth: []
+      summary: Создать учебный год
+      tags:
+      - academic-years
+  /api/v1/academic-years/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID учебного года
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Удалить учебный год
+      tags:
+      - academic-years
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID учебного года
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.AcademicYear'
+      security:
+      - BearerAuth: []
+      summary: Получить учебный год по ID
+      tags:
+      - academic-years
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID учебного года
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Учебный год
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.AcademicYear'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.AcademicYear'
+      security:
+      - BearerAuth: []
+      summary: Обновить учебный год
+      tags:
+      - academic-years
+  /api/v1/attendances:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID студента
+        in: query
+        name: student_id
+        type: integer
+      - description: ID дисциплины
+        in: query
+        name: discipline_id
+        type: integer
+      - description: С даты (YYYY-MM-DD)
+        in: query
+        name: from_date
+        type: string
+      - description: По дату (YYYY-MM-DD)
+        in: query
+        name: to_date
+        type: string
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.Attendance'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить список посещаемости с фильтрацией
+      tags:
+      - attendances
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Посещаемость
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Attendance'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Attendance'
+      security:
+      - BearerAuth: []
+      summary: Добавить посещаемость
+      tags:
+      - attendances
+  /api/v1/attendances/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID посещаемости
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Удалить посещаемость
+      tags:
+      - attendances
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID посещаемости
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Attendance'
+      security:
+      - BearerAuth: []
+      summary: Получить посещаемость по ID
+      tags:
+      - attendances
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID посещаемости
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Посещаемость
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Attendance'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Attendance'
+      security:
+      - BearerAuth: []
+      summary: Обновить посещаемость
+      tags:
+      - attendances
+  /api/v1/curriculums:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID семестра
+        in: query
+        name: semester_id
+        type: integer
+      - description: ID дисциплины
+        in: query
+        name: discipline_id
+        type: integer
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.Curriculum'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить список учебных планов
+      tags:
+      - curriculums
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Учебный план
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Curriculum'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Curriculum'
+      security:
+      - BearerAuth: []
+      summary: Создать учебный план
+      tags:
+      - curriculums
+  /api/v1/curriculums/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID учебного плана
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Удалить учебный план
+      tags:
+      - curriculums
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID учебного плана
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Curriculum'
+      security:
+      - BearerAuth: []
+      summary: Получить учебный план по ID
+      tags:
+      - curriculums
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID учебного плана
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Учебный план
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Curriculum'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Curriculum'
+      security:
+      - BearerAuth: []
+      summary: Обновить учебный план
+      tags:
+      - curriculums
+  /api/v1/disciplines:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID преподавателя
+        in: query
+        name: teacher_id
+        type: integer
+      - description: ID группы
+        in: query
+        name: student_group_id
+        type: integer
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.Discipline'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить список дисциплин с фильтрацией
+      tags:
+      - disciplines
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Дисциплина
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Discipline'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Discipline'
+      security:
+      - BearerAuth: []
+      summary: Создать дисциплину
+      tags:
+      - disciplines
+  /api/v1/disciplines/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID дисциплины
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Удалить дисциплину
+      tags:
+      - disciplines
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID дисциплины
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Discipline'
+      security:
+      - BearerAuth: []
+      summary: Получить дисциплину по ID
+      tags:
+      - disciplines
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID дисциплины
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Дисциплина
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Discipline'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Discipline'
+      security:
+      - BearerAuth: []
+      summary: Обновить дисциплину
+      tags:
+      - disciplines
+  /api/v1/disciplines/public:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID преподавателя
+        in: query
+        name: teacher_id
+        type: integer
+      - description: ID группы студентов
+        in: query
+        name: student_group_id
+        type: integer
+      - description: ID учебного года
+        in: query
+        name: academic_year_id
+        type: integer
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.DisciplinePublic'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить список публичных дисциплин
+      tags:
+      - disciplines
+  /api/v1/disciplines/public/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID дисциплины
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.DisciplinePublic'
+      security:
+      - BearerAuth: []
+      summary: Получить публичную дисциплину по ID
+      tags:
+      - disciplines
+  /api/v1/gradejournals:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID студента
+        in: query
+        name: student_id
+        type: integer
+      - description: ID дисциплины
+        in: query
+        name: discipline_id
+        type: integer
+      - description: С даты (YYYY-MM-DD)
+        in: query
+        name: from_date
+        type: string
+      - description: По дату (YYYY-MM-DD)
+        in: query
+        name: to_date
+        type: string
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.GradeJournal'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить список оценок с фильтрацией
+      tags:
+      - gradejournals
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Запись
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.GradeJournal'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.GradeJournal'
+      security:
+      - BearerAuth: []
+      summary: Добавить запись в журнал оценок
+      tags:
+      - gradejournals
+  /api/v1/gradejournals/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID записи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Удалить запись из журнала
+      tags:
+      - gradejournals
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID записи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.GradeJournal'
+      security:
+      - BearerAuth: []
+      summary: Получить запись журнала по ID
+      tags:
+      - gradejournals
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID записи
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Запись
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.GradeJournal'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.GradeJournal'
+      security:
+      - BearerAuth: []
+      summary: Обновить запись в журнале
+      tags:
+      - gradejournals
+  /api/v1/gradejournals/average:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID студента
+        in: query
+        name: student_id
+        type: integer
+      - description: ID дисциплины
+        in: query
+        name: discipline_id
+        type: integer
+      - description: С даты (YYYY-MM-DD)
+        in: query
+        name: from_date
+        type: string
+      - description: По дату (YYYY-MM-DD)
+        in: query
+        name: to_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: number
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Получить средний балл
+      tags:
+      - gradejournals
+  /api/v1/gradejournals/public:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID студента
+        in: query
+        name: student_id
+        type: integer
+      - description: ID дисциплины
+        in: query
+        name: discipline_id
+        type: integer
+      - description: С даты (YYYY-MM-DD)
+        in: query
+        name: from_date
+        type: string
+      - description: По дату (YYYY-MM-DD)
+        in: query
+        name: to_date
+        type: string
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.GradeJournalPublic'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить список публичных оценок
+      tags:
+      - gradejournals
+  /api/v1/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Email и пароль
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: JWT Token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      summary: Логин пользователя
+      tags:
+      - auth
+  /api/v1/permissions:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.Permission'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить список прав
+      tags:
+      - permissions
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Право
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Permission'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Permission'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Создать право
+      tags:
+      - permissions
+  /api/v1/permissions/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID права
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Удалить право
+      tags:
+      - permissions
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID права
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Permission'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить право по ID
+      tags:
+      - permissions
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID права
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Право
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Permission'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Permission'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Обновить право
+      tags:
+      - permissions
+  /api/v1/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные для регистрации
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: JWT Token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      summary: Регистрация пользователя
+      tags:
+      - auth
+  /api/v1/role-permissions/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID роли
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.Permission'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить список прав роли
+      tags:
+      - role-permissions
+  /api/v1/role-permissions/assign:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Роль и право
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_http-server_handler_v1.assignPermissionInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Назначить право роли
+      tags:
+      - role-permissions
+  /api/v1/role-permissions/remove:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Роль и право
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_http-server_handler_v1.assignPermissionInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Удалить право у роли
+      tags:
+      - role-permissions
+  /api/v1/roles:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.Role'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить список ролей
+      tags:
+      - roles
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Роль
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Role'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Role'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Создать роль
+      tags:
+      - roles
+  /api/v1/roles/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID роли
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Удалить роль
+      tags:
+      - roles
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID роли
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Role'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить роль по ID
+      tags:
+      - roles
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID роли
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Роль
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Role'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Role'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Обновить роль
+      tags:
+      - roles
+  /api/v1/semesters:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID учебного года
+        in: query
+        name: academic_year_id
+        type: integer
+      - description: С даты (YYYY-MM-DD)
+        in: query
+        name: from_date
+        type: string
+      - description: По дату (YYYY-MM-DD)
+        in: query
+        name: to_date
+        type: string
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.Semester'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить список семестров с фильтрацией
+      tags:
+      - semesters
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Семестр
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Semester'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Semester'
+      security:
+      - BearerAuth: []
+      summary: Создать семестр
+      tags:
+      - semesters
+  /api/v1/semesters/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID семестра
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Удалить семестр
+      tags:
+      - semesters
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID семестра
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Semester'
+      security:
+      - BearerAuth: []
+      summary: Получить семестр по ID
+      tags:
+      - semesters
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID семестра
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Семестр
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Semester'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Semester'
+      security:
+      - BearerAuth: []
+      summary: Обновить семестр
+      tags:
+      - semesters
+  /api/v1/student-groups:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID куратора
+        in: query
+        name: curator_id
+        type: integer
+      - description: ID учебного года
+        in: query
+        name: academic_year_id
+        type: integer
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.StudentGroup'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить список групп студентов
+      tags:
+      - student-groups
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Группа
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.StudentGroup'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.StudentGroup'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Создать группу студентов
+      tags:
+      - student-groups
+  /api/v1/student-groups/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID группы
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Удалить группу студентов
+      tags:
+      - student-groups
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID группы
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.StudentGroup'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить группу по ID
+      tags:
+      - student-groups
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID группы
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Группа
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.StudentGroup'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.StudentGroup'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Обновить группу студентов
+      tags:
+      - student-groups
+  /api/v1/student-groups/public:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.StudentGroupPublic'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить список публичных групп
+      tags:
+      - student-groups
+  /api/v1/student-groups/public/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID группы
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.StudentGroupPublic'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить публичную группу по ID
+      tags:
+      - student-groups
+  /api/v1/students:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.Student'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить список студентов
+      tags:
+      - students
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Студент
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Student'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Student'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Создать студента
+      tags:
+      - students
+  /api/v1/students/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID студента
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Удалить студента
+      tags:
+      - students
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID студента
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Student'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить студента по ID
+      tags:
+      - students
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID студента
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Студент
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Student'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Student'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Обновить данные студента
+      tags:
+      - students
+  /api/v1/students/public:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.StudentPublic'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить публичный список студентов
+      tags:
+      - students
+  /api/v1/students/public/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID студента
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.StudentPublic'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить публичного студента по ID
+      tags:
+      - students
+  /api/v1/teacher:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.Teacher'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить список преподавателей
+      tags:
+      - teachers
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Преподаватель
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Teacher'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Teacher'
+      security:
+      - BearerAuth: []
+      summary: Создать преподавателя
+      tags:
+      - teachers
+  /api/v1/teacher/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID преподавателя
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Удалить преподавателя по ID
+      tags:
+      - teachers
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID преподавателя
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Teacher'
+      security:
+      - BearerAuth: []
+      summary: Получить преподавателя по ID
+      tags:
+      - teachers
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID преподавателя
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Преподаватель
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Teacher'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Teacher'
+      security:
+      - BearerAuth: []
+      summary: Обновить преподавателя по ID
+      tags:
+      - teachers
+  /api/v1/teacher/me:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Teacher'
+      security:
+      - BearerAuth: []
+      summary: Получить свой профиль преподавателя
+      tags:
+      - teachers
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Преподаватель
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.Teacher'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.Teacher'
+      security:
+      - BearerAuth: []
+      summary: Обновить свой профиль преподавателя
+      tags:
+      - teachers
+  /api/v1/teacher/public:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.TeacherPublic'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Получить публичный список преподавателей
+      tags:
+      - teachers
+  /api/v1/teacher/public/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID преподавателя
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.TeacherPublic'
+      security:
+      - BearerAuth: []
+      summary: Получить публичный профиль преподавателя по ID
+      tags:
+      - teachers
+  /api/v1/user-roles/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.UserRole'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить роли пользователя
+      tags:
+      - user-roles
+  /api/v1/user-roles/assign:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Пользователь и роль
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_http-server_handler_v1.assignRoleInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Назначить роль пользователю
+      tags:
+      - user-roles
+  /api/v1/user-roles/remove:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Пользователь и роль
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_http-server_handler_v1.assignRoleInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Удалить роль у пользователя
+      tags:
+      - user-roles
+  /api/v1/users:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ограничение
+        in: query
+        name: limit
+        type: integer
+      - description: Смещение
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service_internal_domain_models.User'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить список пользователей
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Пользователь
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Создать пользователя
+      tags:
+      - users
+  /api/v1/users/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Удалить пользователя
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Получить пользователя по ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Пользователь
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service_internal_domain_models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service_internal_domain_models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service_internal_lib_api_response.Response'
+      security:
+      - BearerAuth: []
+      summary: Обновить пользователя
+      tags:
+      - users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

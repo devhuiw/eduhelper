@@ -35,7 +35,16 @@ type assignRoleInput struct {
 	RoleID int64 `json:"role_id"`
 }
 
-// POST /api/v1/user-roles/assign
+// @Summary Назначить роль пользователю
+// @Tags user-roles
+// @Accept json
+// @Produce json
+// @Param input body assignRoleInput true "Пользователь и роль"
+// @Success 200 {object} resp.Response
+// @Failure 400 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/user-roles/assign [post]
+// @Security BearerAuth
 func (h *UserRoleHandler) AssignRole(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.userrole.AssignRole"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -58,7 +67,16 @@ func (h *UserRoleHandler) AssignRole(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
-// POST /api/v1/user-roles/remove
+// @Summary Удалить роль у пользователя
+// @Tags user-roles
+// @Accept json
+// @Produce json
+// @Param input body assignRoleInput true "Пользователь и роль"
+// @Success 200 {object} resp.Response
+// @Failure 400 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/user-roles/remove [post]
+// @Security BearerAuth
 func (h *UserRoleHandler) RemoveRole(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.userrole.RemoveRole"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -81,6 +99,17 @@ func (h *UserRoleHandler) RemoveRole(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Получить роли пользователя
+// @Tags user-roles
+// @Accept json
+// @Produce json
+// @Param id path int true "ID пользователя"
+// @Success 200 {array} models.UserRole
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/user-roles/{id} [get]
+// @Security BearerAuth
 func (h *UserRoleHandler) GetRolesByUserID(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.userrole.GetRolesByUserID"
 	return func(w http.ResponseWriter, r *http.Request) {

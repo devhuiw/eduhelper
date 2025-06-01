@@ -35,6 +35,16 @@ type assignPermissionInput struct {
 	PermissionID int64 `json:"permission_id"`
 }
 
+// @Summary Назначить право роли
+// @Tags role-permissions
+// @Accept json
+// @Produce json
+// @Param input body assignPermissionInput true "Роль и право"
+// @Success 200 {object} resp.Response
+// @Failure 400 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/role-permissions/assign [post]
+// @Security BearerAuth
 func (h *RolePermissionHandler) AssignPermission(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.rolepermission.AssignPermission"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -57,6 +67,16 @@ func (h *RolePermissionHandler) AssignPermission(log *slog.Logger) http.HandlerF
 	}
 }
 
+// @Summary Удалить право у роли
+// @Tags role-permissions
+// @Accept json
+// @Produce json
+// @Param input body assignPermissionInput true "Роль и право"
+// @Success 200 {object} resp.Response
+// @Failure 400 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/role-permissions/remove [post]
+// @Security BearerAuth
 func (h *RolePermissionHandler) RemovePermission(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.rolepermission.RemovePermission"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -79,6 +99,17 @@ func (h *RolePermissionHandler) RemovePermission(log *slog.Logger) http.HandlerF
 	}
 }
 
+// @Summary Получить список прав роли
+// @Tags role-permissions
+// @Accept json
+// @Produce json
+// @Param id path int true "ID роли"
+// @Success 200 {array} models.Permission
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/role-permissions/{id} [get]
+// @Security BearerAuth
 func (h RolePermissionHandler) GetPermissionsByRoleID(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.rolepermission.GetPermissionsByRoleID"
 	return func(w http.ResponseWriter, r *http.Request) {

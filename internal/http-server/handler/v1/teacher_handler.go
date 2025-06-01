@@ -35,6 +35,14 @@ func NewTeacherHandler(repo TeacherRepository) *TeacherHandler {
 	return &TeacherHandler{repo: repo}
 }
 
+// @Summary Создать преподавателя
+// @Tags teachers
+// @Accept json
+// @Produce json
+// @Param input body models.Teacher true "Преподаватель"
+// @Success 201 {object} models.Teacher
+// @Router /api/v1/teacher [post]
+// @Security BearerAuth
 func (h *TeacherHandler) CreateTeacher(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.teacher_handler.Create"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -60,6 +68,14 @@ func (h *TeacherHandler) CreateTeacher(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Получить преподавателя по ID
+// @Tags teachers
+// @Accept json
+// @Produce json
+// @Param id path int true "ID преподавателя"
+// @Success 200 {object} models.Teacher
+// @Router /api/v1/teacher/{id} [get]
+// @Security BearerAuth
 func (h *TeacherHandler) GetTeacherByID(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.teacher_handler.GetTeacherByID"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -92,6 +108,14 @@ func (h *TeacherHandler) GetTeacherByID(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Получить публичный профиль преподавателя по ID
+// @Tags teachers
+// @Accept json
+// @Produce json
+// @Param id path int true "ID преподавателя"
+// @Success 200 {object} models.TeacherPublic
+// @Router /api/v1/teacher/public/{id} [get]
+// @Security BearerAuth
 func (h *TeacherHandler) GetTeacherPublicByID(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.teacher_handler.GetTeacherPublicByID"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -124,6 +148,13 @@ func (h *TeacherHandler) GetTeacherPublicByID(log *slog.Logger) http.HandlerFunc
 	}
 }
 
+// @Summary Получить свой профиль преподавателя
+// @Tags teachers
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.Teacher
+// @Router /api/v1/teacher/me [get]
+// @Security BearerAuth
 func (h *TeacherHandler) GetMyTeacherProfile(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.teacher_handler.GetMyTeacherProfile"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -150,6 +181,15 @@ func (h *TeacherHandler) GetMyTeacherProfile(log *slog.Logger) http.HandlerFunc 
 	}
 }
 
+// @Summary Обновить преподавателя по ID
+// @Tags teachers
+// @Accept json
+// @Produce json
+// @Param id path int true "ID преподавателя"
+// @Param input body models.Teacher true "Преподаватель"
+// @Success 200 {object} models.Teacher
+// @Router /api/v1/teacher/{id} [put]
+// @Security BearerAuth
 func (h *TeacherHandler) UpdateTeacher(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.teacher_handler.UpdateTeacher"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -191,6 +231,14 @@ func (h *TeacherHandler) UpdateTeacher(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Обновить свой профиль преподавателя
+// @Tags teachers
+// @Accept json
+// @Produce json
+// @Param input body models.Teacher true "Преподаватель"
+// @Success 200 {object} models.Teacher
+// @Router /api/v1/teacher/me [put]
+// @Security BearerAuth
 func (h *TeacherHandler) UpdateMyTeacherProfile(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.teacher_handler.UpdateMyTeacherProfile"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -226,6 +274,14 @@ func (h *TeacherHandler) UpdateMyTeacherProfile(log *slog.Logger) http.HandlerFu
 	}
 }
 
+// @Summary Удалить преподавателя по ID
+// @Tags teachers
+// @Accept json
+// @Produce json
+// @Param id path int true "ID преподавателя"
+// @Success 204 {string} string "No Content"
+// @Router /api/v1/teacher/{id} [delete]
+// @Security BearerAuth
 func (h *TeacherHandler) DeleteTeacher(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.teacher.DeleteTeacher"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -257,6 +313,15 @@ func (h *TeacherHandler) DeleteTeacher(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Получить список преподавателей
+// @Tags teachers
+// @Accept json
+// @Produce json
+// @Param limit query int false "Ограничение"
+// @Param offset query int false "Смещение"
+// @Success 200 {array} models.Teacher
+// @Router /api/v1/teacher [get]
+// @Security BearerAuth
 func (h *TeacherHandler) ListTeacher(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.teacher_handler.ListTeacher"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -278,6 +343,15 @@ func (h *TeacherHandler) ListTeacher(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Получить публичный список преподавателей
+// @Tags teachers
+// @Accept json
+// @Produce json
+// @Param limit query int false "Ограничение"
+// @Param offset query int false "Смещение"
+// @Success 200 {array} models.TeacherPublic
+// @Router /api/v1/teacher/public [get]
+// @Security BearerAuth
 func (h *TeacherHandler) ListTeacherPublic(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.teacher_handler.ListTeacherPublic"
 	return func(w http.ResponseWriter, r *http.Request) {

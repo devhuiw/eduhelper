@@ -20,7 +20,7 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 func (r *UserRepository) CreateClient(ctx context.Context, user *models.User) error {
 	query := `
 		INSERT INTO user (
-			first_name, last_name, middle_name, email, password, created_at, update_at
+			first_name, last_name, middle_name, email, password, created_at, updated_at
 		) VALUES (?, ?, ?, ?, ?, ?, ?)
 	`
 	now := time.Now()
@@ -81,7 +81,7 @@ func (r *UserRepository) GetClientByID(ctx context.Context, id int64) (*models.U
 
 func (r *UserRepository) GetClientByEmail(ctx context.Context, email string) (*models.User, error) {
 	query := `
-		SELECT user_id, created_at, update_at, first_name, last_name, middle_name, email, password
+		SELECT user_id, created_at, updated_at, first_name, last_name, middle_name, email, password
 		FROM user WHERE email = ?
 	`
 	row := r.db.QueryRowContext(ctx, query, email)

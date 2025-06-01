@@ -33,6 +33,16 @@ func NewRoleHandler(repo RoleRepository) *RoleHandler {
 	return &RoleHandler{repo: repo}
 }
 
+// @Summary Создать роль
+// @Tags roles
+// @Accept json
+// @Produce json
+// @Param input body models.Role true "Роль"
+// @Success 201 {object} models.Role
+// @Failure 400 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/roles [post]
+// @Security BearerAuth
 func (h *RoleHandler) CreateRole(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.role.CreateRole"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -57,6 +67,17 @@ func (h *RoleHandler) CreateRole(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Получить роль по ID
+// @Tags roles
+// @Accept json
+// @Produce json
+// @Param id path int true "ID роли"
+// @Success 200 {object} models.Role
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/roles/{id} [get]
+// @Security BearerAuth
 func (h *RoleHandler) GetRoleByID(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.role.GetRoleByID"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -86,6 +107,18 @@ func (h *RoleHandler) GetRoleByID(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Обновить роль
+// @Tags roles
+// @Accept json
+// @Produce json
+// @Param id path int true "ID роли"
+// @Param input body models.Role true "Роль"
+// @Success 200 {object} models.Role
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/roles/{id} [put]
+// @Security BearerAuth
 func (h *RoleHandler) UpdateRole(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.role.UpdateRole"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -123,6 +156,17 @@ func (h *RoleHandler) UpdateRole(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Удалить роль
+// @Tags roles
+// @Accept json
+// @Produce json
+// @Param id path int true "ID роли"
+// @Success 204 {string} string "No Content"
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/roles/{id} [delete]
+// @Security BearerAuth
 func (h *RoleHandler) DeleteRole(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.role.DeleteRole"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -151,6 +195,14 @@ func (h *RoleHandler) DeleteRole(log *slog.Logger) http.HandlerFunc {
 	}
 }
 
+// @Summary Получить список ролей
+// @Tags roles
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.Role
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/roles [get]
+// @Security BearerAuth
 func (h *RoleHandler) ListRoles(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.role.ListRoles"
 	return func(w http.ResponseWriter, r *http.Request) {

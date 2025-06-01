@@ -16,7 +16,7 @@ table?=schema_migrations
 DB_URL=mysql://$(user):$(password)@tcp($(host):$(port))/$(db_name)?multiStatements=true
 MIGRATE=go run github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
-.PHONY: all build run test lint tidy clean migrate-up migrate-down migrate
+.PHONY: all build run test lint tidy clean migrate-up migrate-down generate-docs
 
 all: build
 
@@ -58,3 +58,6 @@ migrate-down:
 		--db-port=$(port) \
 		--db-name=$(db_name)
 		--down
+
+generate-docs: 
+	swag init --parseDependency  --parseInternal --parseDepth 1 -g ./cmd/eduhelper/main.go -o ./internal/docs

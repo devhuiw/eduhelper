@@ -17,8 +17,8 @@ func NewRoleRepository(db *sql.DB) *RoleRepository {
 
 func (r *RoleRepository) CreateRole(ctx context.Context, role *models.Role) (int64, error) {
 	query := `
-		INSERT INTO roles (role_name, created_at, update_at)
-		VALUES ($1, $2, $3)
+		INSERT INTO roles (role_name, created_at, updated_at)
+		VALUES (?, ?, ?)
 		RETURNING role_id
 	`
 	var id int64
@@ -32,9 +32,9 @@ func (r *RoleRepository) CreateRole(ctx context.Context, role *models.Role) (int
 
 func (r *RoleRepository) GetRoleByID(ctx context.Context, id int64) (*models.Role, error) {
 	query := `
-		SELECT role_id, role_name, created_at, update_at
+		SELECT role_id, role_name, created_at, updated_at
 		FROM roles
-		WHERE role_id = $1
+		WHERE role_id = ?
 	`
 	var role models.Role
 	err := r.db.QueryRowContext(ctx, query, id).Scan(
@@ -51,9 +51,9 @@ func (r *RoleRepository) GetRoleByID(ctx context.Context, id int64) (*models.Rol
 
 func (r *RoleRepository) GetRoleByName(ctx context.Context, name string) (*models.Role, error) {
 	query := `
-		SELECT role_id, role_name, created_at, update_at
+		SELECT role_id, role_name, created_at, updated_at
 		FROM roles
-		WHERE role_name = $1
+		WHERE role_name = ?
 	`
 	var role models.Role
 	err := r.db.QueryRowContext(ctx, query, name).Scan(
@@ -71,22 +71,22 @@ func (r *RoleRepository) GetRoleByName(ctx context.Context, name string) (*model
 func (r *RoleRepository) UpdateRole(ctx context.Context, role *models.Role) error {
 	query := `
 		UPDATE roles
-		SET role_name = $1, update_at = $2
-		WHERE role_id = $3
+		SET role_name = ?, updated_at = ?
+		WHERE role_id = ?
 	`
 	_, err := r.db.ExecContext(ctx, query, role.RoleName, time.Now(), role.RoleID)
 	return err
 }
 
 func (r *RoleRepository) DeleteRole(ctx context.Context, id int64) error {
-	query := `DELETE FROM roles WHERE role_id = $1`
+	query := `DELETE FROM roles WHERE role_id = ?`
 	_, err := r.db.ExecContext(ctx, query, id)
 	return err
 }
 
 func (r *RoleRepository) ListRole(ctx context.Context) ([]*models.Role, error) {
 	query := `
-		SELECT role_id, role_name, created_at, update_at
+		SELECT role_id, role_name, created_at, updated_at
 		FROM roles
 		ORDER BY role_id
 	`

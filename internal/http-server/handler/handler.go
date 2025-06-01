@@ -13,6 +13,10 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
+	_ "service/internal/docs"
+
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func NewServer(
@@ -61,13 +65,33 @@ func NewServer(
 	studentGroupRepository := repository.NewStudentGroupRepository(db)
 	studentGroupHandler := v1.NewStudentGroupHandler(studentGroupRepository)
 
+	curriculumRepository := repository.NewCurriculumRepository(db)
+	curriculumHandler := v1.NewCurriculumHandler(curriculumRepository)
+
+	gradeJournalRepository := repository.NewGradeJournalRepository(db)
+	gradeJournalHandler := v1.NewGradeJournalHandler(gradeJournalRepository)
+
+	attendanceRepository := repository.NewAttendanceRepository(db)
+	attendanceHandler := v1.NewAttendanceHandler(attendanceRepository)
+
+	semesterRepository := repository.NewSemesterRepository(db)
+	semesterHandler := v1.NewSemesterHandler(semesterRepository)
+
+	disciplineRepository := repository.NewDisciplineRepository(db)
+	disciplineHandler := v1.NewDisciplineHandler(disciplineRepository)
+
+	academicYearRepository := repository.NewAcademicYearRepository(db)
+	academicYearHandler := v1.NewAcademicYearHandler(academicYearRepository)
+
+	router.Get("/swagger/*", httpSwagger.WrapHandler)
+
 	router.Route("/api/v1", func(r chi.Router) {
 		r.Post("/register", authHandler.Register(log))
 		r.Post("/login", authHandler.Login(log))
 	})
 
 	router.Group(func(r chi.Router) {
-		r.Use(middle.JWTAuth())
+		r.Use(middle.JWTAuth(cfg.JwtSecret))
 		r.Use(middle.AuthRequired())
 
 		r.Route("/api/v1/users", func(rr chi.Router) {
@@ -82,6 +106,7 @@ func NewServer(
 			rr.With(rbacMiddleware.RequirePermission("teacher:view_self")).Get("/{id}", teacherHandler.GetTeacherPublicByID(log))
 			rr.With(rbacMiddleware.RequirePermission("teacher:update_self")).Put("/me", teacherHandler.UpdateMyTeacherProfile(log))
 			rr.With(rbacMiddleware.RequirePermission("teacher:create")).Post("/", teacherHandler.CreateTeacher(log))
+			rr.With(rbacMiddleware.RequirePermission("teacher:list")).Get("/", teacherHandler.ListTeacher(log))
 			rr.With(rbacMiddleware.RequirePermission("teacher:view")).Get("/{id}", teacherHandler.GetTeacherByID(log))
 			rr.With(rbacMiddleware.RequirePermission("teacher:update")).Put("/{id}", teacherHandler.UpdateTeacher(log))
 			rr.With(rbacMiddleware.RequirePermission("teacher:delete")).Delete("/{id}", teacherHandler.DeleteTeacher(log))
@@ -133,6 +158,58 @@ func NewServer(
 			rr.With(rbacMiddleware.RequirePermission("rolepermission:assign")).Post("/assign", rolePermissionHandler.AssignPermission(log))
 			rr.With(rbacMiddleware.RequirePermission("rolepermission:remove")).Post("/remove", rolePermissionHandler.RemovePermission(log))
 			rr.With(rbacMiddleware.RequirePermission("rolepermission:view")).Get("/{id}", rolePermissionHandler.GetPermissionsByRoleID(log))
+		})
+
+		r.Route("/api/v1/curriculums", func(rr chi.Router) {
+			rr.With(rbacMiddleware.RequirePermission("curriculum:create")).Post("/", curriculumHandler.CreateCurriculum(log))
+			rr.With(rbacMiddleware.RequirePermission("curriculum:view")).Get("/{id}", curriculumHandler.GetCurriculumByID(log))
+			rr.With(rbacMiddleware.RequirePermission("curriculum:update")).Put("/{id}", curriculumHandler.UpdateCurriculum(log))
+			rr.With(rbacMiddleware.RequirePermission("curriculum:delete")).Delete("/{id}", curriculumHandler.DeleteCurriculum(log))
+			rr.With(rbacMiddleware.RequirePermission("curriculum:list")).Get("/", curriculumHandler.ListCurriculum(log))
+		})
+
+		r.Route("/api/v1/gradejournals", func(rr chi.Router) {
+			rr.With(rbacMiddleware.RequirePermission("gradejournal:create")).Post("/", gradeJournalHandler.CreateGradeJournal(log))
+			rr.With(rbacMiddleware.RequirePermission("gradejournal:view")).Get("/{id}", gradeJournalHandler.GetGradeJournalByID(log))
+			rr.With(rbacMiddleware.RequirePermission("gradejournal:update")).Put("/{id}", gradeJournalHandler.UpdateGradeJournal(log))
+			rr.With(rbacMiddleware.RequirePermission("gradejournal:delete")).Delete("/{id}", gradeJournalHandler.DeleteGradeJournal(log))
+			rr.With(rbacMiddleware.RequirePermission("gradejournal:list")).Get("/", gradeJournalHandler.ListGradeJournal(log))
+			rr.With(rbacMiddleware.RequirePermission("gradejournal:list_public")).Get("/public", gradeJournalHandler.ListGradeJournalPublic(log))
+			rr.With(rbacMiddleware.RequirePermission("gradejournal:avg")).Get("/average", gradeJournalHandler.GetAverageGrade(log))
+		})
+
+		r.Route("/api/v1/attendances", func(rr chi.Router) {
+			rr.With(rbacMiddleware.RequirePermission("attendance:create")).Post("/", attendanceHandler.CreateAttendance(log))
+			rr.With(rbacMiddleware.RequirePermission("attendance:view")).Get("/{id}", attendanceHandler.GetAttendanceByID(log))
+			rr.With(rbacMiddleware.RequirePermission("attendance:update")).Put("/{id}", attendanceHandler.UpdateAttendance(log))
+			rr.With(rbacMiddleware.RequirePermission("attendance:delete")).Delete("/{id}", attendanceHandler.DeleteAttendance(log))
+			rr.With(rbacMiddleware.RequirePermission("attendance:list")).Get("/", attendanceHandler.ListAttendance(log))
+		})
+
+		r.Route("/api/v1/semesters", func(rr chi.Router) {
+			rr.With(rbacMiddleware.RequirePermission("semester:create")).Post("/", semesterHandler.CreateSemester(log))
+			rr.With(rbacMiddleware.RequirePermission("semester:view")).Get("/{id}", semesterHandler.GetSemesterByID(log))
+			rr.With(rbacMiddleware.RequirePermission("semester:update")).Put("/{id}", semesterHandler.UpdateSemester(log))
+			rr.With(rbacMiddleware.RequirePermission("semester:delete")).Delete("/{id}", semesterHandler.DeleteSemester(log))
+			rr.With(rbacMiddleware.RequirePermission("semester:list")).Get("/", semesterHandler.ListSemester(log))
+		})
+
+		r.Route("/api/v1/disciplines", func(rr chi.Router) {
+			rr.With(rbacMiddleware.RequirePermission("discipline:create")).Post("/", disciplineHandler.CreateDiscipline(log))
+			rr.With(rbacMiddleware.RequirePermission("discipline:view")).Get("/{id}", disciplineHandler.GetDisciplineByID(log))
+			rr.With(rbacMiddleware.RequirePermission("discipline:update")).Put("/{id}", disciplineHandler.UpdateDiscipline(log))
+			rr.With(rbacMiddleware.RequirePermission("discipline:delete")).Delete("/{id}", disciplineHandler.DeleteDiscipline(log))
+			rr.With(rbacMiddleware.RequirePermission("discipline:list")).Get("/", disciplineHandler.ListDiscipline(log))
+			rr.With(rbacMiddleware.RequirePermission("discipline:list_public")).Get("/public", disciplineHandler.ListDisciplinePublic(log))
+			rr.With(rbacMiddleware.RequirePermission("discipline:view_public")).Get("/public/{id}", disciplineHandler.GetDisciplinePublicByID(log))
+		})
+
+		r.Route("/api/v1/academic-years", func(rr chi.Router) {
+			rr.With(rbacMiddleware.RequirePermission("academicyear:create")).Post("/", academicYearHandler.CreateAcademicYear(log))
+			rr.With(rbacMiddleware.RequirePermission("academicyear:view")).Get("/{id}", academicYearHandler.GetAcademicYearByID(log))
+			rr.With(rbacMiddleware.RequirePermission("academicyear:update")).Put("/{id}", academicYearHandler.UpdateAcademicYear(log))
+			rr.With(rbacMiddleware.RequirePermission("academicyear:delete")).Delete("/{id}", academicYearHandler.DeleteAcademicYear(log))
+			rr.With(rbacMiddleware.RequirePermission("academicyear:list")).Get("/", academicYearHandler.ListAcademicYear(log))
 		})
 	})
 

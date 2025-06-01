@@ -34,6 +34,16 @@ func NewStudentGroupHandler(repo StudentGroupRepository) *StudentGroupHandler {
 	return &StudentGroupHandler{repo: repo}
 }
 
+// @Summary Создать группу студентов
+// @Tags student-groups
+// @Accept json
+// @Produce json
+// @Param input body models.StudentGroup true "Группа"
+// @Success 201 {object} models.StudentGroup
+// @Failure 400 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/student-groups [post]
+// @Security BearerAuth
 func (h *StudentGroupHandler) CreateStudentGroup(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.studentgroup_handler.CreateStudentGroup"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -61,6 +71,15 @@ func (h *StudentGroupHandler) CreateStudentGroup(log *slog.Logger) http.HandlerF
 	}
 }
 
+// @Summary Получить группу по ID
+// @Tags student-groups
+// @Accept json
+// @Produce json
+// @Param id path int true "ID группы"
+// @Success 200 {object} models.StudentGroup
+// @Failure 404 {object} resp.Response
+// @Router /api/v1/student-groups/{id} [get]
+// @Security BearerAuth
 func (h *StudentGroupHandler) GetStudentGroupByID(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.studentgroup_handler.GetStudentGroupByID"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -93,6 +112,15 @@ func (h *StudentGroupHandler) GetStudentGroupByID(log *slog.Logger) http.Handler
 	}
 }
 
+// @Summary Получить публичную группу по ID
+// @Tags student-groups
+// @Accept json
+// @Produce json
+// @Param id path int true "ID группы"
+// @Success 200 {object} models.StudentGroupPublic
+// @Failure 404 {object} resp.Response
+// @Router /api/v1/student-groups/public/{id} [get]
+// @Security BearerAuth
 func (h *StudentGroupHandler) GetStudentGroupPublicByID(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.studentgroup_handler.GetStudentGroupPublicByID"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -125,6 +153,16 @@ func (h *StudentGroupHandler) GetStudentGroupPublicByID(log *slog.Logger) http.H
 	}
 }
 
+// @Summary Обновить группу студентов
+// @Tags student-groups
+// @Accept json
+// @Produce json
+// @Param id path int true "ID группы"
+// @Param input body models.StudentGroup true "Группа"
+// @Success 200 {object} models.StudentGroup
+// @Failure 404 {object} resp.Response
+// @Router /api/v1/student-groups/{id} [put]
+// @Security BearerAuth
 func (h *StudentGroupHandler) UpdateStudentGroup(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.studentgroup_handler.UpdateStudentGroup"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -165,6 +203,15 @@ func (h *StudentGroupHandler) UpdateStudentGroup(log *slog.Logger) http.HandlerF
 	}
 }
 
+// @Summary Удалить группу студентов
+// @Tags student-groups
+// @Accept json
+// @Produce json
+// @Param id path int true "ID группы"
+// @Success 204 {string} string "No Content"
+// @Failure 404 {object} resp.Response
+// @Router /api/v1/student-groups/{id} [delete]
+// @Security BearerAuth
 func (h *StudentGroupHandler) DeleteStudentGroup(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.studentgroup_handler.DeleteStudentGroup"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -196,6 +243,17 @@ func (h *StudentGroupHandler) DeleteStudentGroup(log *slog.Logger) http.HandlerF
 	}
 }
 
+// @Summary Получить список групп студентов
+// @Tags student-groups
+// @Accept json
+// @Produce json
+// @Param curator_id query int false "ID куратора"
+// @Param academic_year_id query int false "ID учебного года"
+// @Param limit query int false "Ограничение"
+// @Param offset query int false "Смещение"
+// @Success 200 {array} models.StudentGroup
+// @Router /api/v1/student-groups [get]
+// @Security BearerAuth
 func (h *StudentGroupHandler) ListStudentGroups(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.studentgroup_handler.ListStudentGroups"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -219,6 +277,15 @@ func (h *StudentGroupHandler) ListStudentGroups(log *slog.Logger) http.HandlerFu
 	}
 }
 
+// @Summary Получить список публичных групп
+// @Tags student-groups
+// @Accept json
+// @Produce json
+// @Param limit query int false "Ограничение"
+// @Param offset query int false "Смещение"
+// @Success 200 {array} models.StudentGroupPublic
+// @Router /api/v1/student-groups/public [get]
+// @Security BearerAuth
 func (h *StudentGroupHandler) ListStudentGroupPublic(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.studentgroup_handler.ListStudentGroupPublic"
 	return func(w http.ResponseWriter, r *http.Request) {

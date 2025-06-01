@@ -18,7 +18,7 @@ func NewStudentRepository(db *sql.DB) *StudentRepository {
 
 func (r *StudentRepository) CreateStudent(ctx context.Context, student *models.Student) error {
 	query := `
-		INSERT INTO student (user_id, phone, birthday, created_at, update_at, student_group_id)
+		INSERT INTO student (user_id, phone, birthday, created_at, updated_at, student_group_id)
 		VALUES (?, ?, ?, ?, ?, ?)
 	`
 	now := time.Now()
@@ -39,7 +39,7 @@ func (r *StudentRepository) CreateStudent(ctx context.Context, student *models.S
 
 func (r *StudentRepository) GetStudentByID(ctx context.Context, userID int64) (*models.Student, error) {
 	query := `
-		SELECT user_id, phone, birthday, created_at, update_at, student_group_id
+		SELECT user_id, phone, birthday, created_at, updated_at, student_group_id
 		FROM student
 		WHERE user_id = ?
 	`
@@ -97,7 +97,7 @@ func (r *StudentRepository) GetStudentPublicByID(ctx context.Context, userID int
 func (r *StudentRepository) UpdateStudent(ctx context.Context, student *models.Student) error {
 	query := `
 		UPDATE student SET
-			phone = ?, birthday = ?, update_at = ?, student_group_id = ?
+			phone = ?, birthday = ?, updated_at = ?, student_group_id = ?
 		WHERE user_id = ?
 	`
 	_, err := r.db.ExecContext(
@@ -119,7 +119,7 @@ func (r *StudentRepository) DeleteStudent(ctx context.Context, userID int64) err
 
 func (r *StudentRepository) ListStudent(ctx context.Context, limit, offset int) ([]*models.Student, error) {
 	query := `
-		SELECT user_id, phone, birthday, created_at, update_at, student_group_id
+		SELECT user_id, phone, birthday, created_at, updated_at, student_group_id
 		FROM student
 		LIMIT ? OFFSET ?
 	`

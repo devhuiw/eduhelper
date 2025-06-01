@@ -1,3 +1,13 @@
+// @title API системы электронного дневника
+// @version 1.0
+// @description Полная документация API для электронного дневника
+// @contact.name API Support
+// @license.name MIT
+// @host localhost:8080
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 package main
 
 import (

@@ -8,16 +8,6 @@ import (
 	"time"
 )
 
-type studentGroupRepository interface {
-	CreateStudentGroup(ctx context.Context, group *models.StudentGroup) error
-	GetStudentGroupByID(ctx context.Context, id int64) (*models.StudentGroup, error)
-	GetStudentGroupPublicByID(ctx context.Context, id int64) (*models.StudentGroupPublic, error)
-	UpdateStudentGroup(ctx context.Context, group *models.StudentGroup) error
-	DeleteStudentGroup(ctx context.Context, id int64) error
-	ListStudentGroups(ctx context.Context, limit, offset int) ([]*models.StudentGroup, error)
-	ListStudentGroupPublic(ctx context.Context, limit, offset int) ([]*models.StudentGroupPublic, error)
-}
-
 type StudentGroupRepository struct {
 	db *sql.DB
 }
@@ -28,7 +18,7 @@ func NewStudentGroupRepository(db *sql.DB) *StudentGroupRepository {
 
 func (r *StudentGroupRepository) CreateStudentGroup(ctx context.Context, group *models.StudentGroup) error {
 	query := `
-		INSERT INTO student_group (student_group_name, curator_id, academic_year_id, created_at, update_at)
+		INSERT INTO student_group (student_group_name, curator_id, academic_year_id, created_at, updated_at)
 		VALUES (?, ?, ?, ?, ?)
 	`
 	now := time.Now()
@@ -54,7 +44,7 @@ func (r *StudentGroupRepository) CreateStudentGroup(ctx context.Context, group *
 
 func (r *StudentGroupRepository) GetStudentGroupByID(ctx context.Context, id int64) (*models.StudentGroup, error) {
 	query := `
-		SELECT student_group_id, created_at, update_at, student_group_name, curator_id, academic_year_id
+		SELECT student_group_id, created_at, updated_at, student_group_name, curator_id, academic_year_id
 		FROM student_group
 		WHERE student_group_id = ?
 	`
@@ -117,7 +107,7 @@ func (r *StudentGroupRepository) GetStudentGroupPublicByID(ctx context.Context, 
 func (r *StudentGroupRepository) UpdateStudentGroup(ctx context.Context, group *models.StudentGroup) error {
 	query := `
 		UPDATE student_group
-		SET student_group_name = ?, curator_id = ?, academic_year_id = ?, update_at = ?
+		SET student_group_name = ?, curator_id = ?, academic_year_id = ?, updated_at = ?
 		WHERE student_group_id = ?
 	`
 	_, err := r.db.ExecContext(ctx, query,
@@ -138,7 +128,7 @@ func (r *StudentGroupRepository) DeleteStudentGroup(ctx context.Context, id int6
 
 func (r *StudentGroupRepository) ListStudentGroups(ctx context.Context, limit, offset int) ([]*models.StudentGroup, error) {
 	query := `
-		SELECT student_group_id, created_at, update_at, student_group_name, curator_id, academic_year_id
+		SELECT student_group_id, created_at, updated_at, student_group_name, curator_id, academic_year_id
 		FROM student_group
 		ORDER BY student_group_id
 		LIMIT ? OFFSET ?

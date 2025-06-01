@@ -17,8 +17,8 @@ func NewRolePermissionRepository(db *sql.DB) *RolePermissionRepository {
 
 func (r *RolePermissionRepository) AssignPermission(ctx context.Context, roleID, permissionID int64) error {
 	_, err := r.db.ExecContext(ctx,
-		`INSERT INTO role_permissions (role_id, permission_id, created_at, update_at)
-		 VALUES ($1, $2, $3, $3)
+		`INSERT INTO role_permissions (role_id, permission_id, created_at, updated_at)
+		 VALUES (?, ?, ?, ?)
 		 ON CONFLICT (role_id, permission_id) DO NOTHING`,
 		roleID, permissionID, time.Now(),
 	)
@@ -27,7 +27,7 @@ func (r *RolePermissionRepository) AssignPermission(ctx context.Context, roleID,
 
 func (r *RolePermissionRepository) RemovePermission(ctx context.Context, roleID, permissionID int64) error {
 	_, err := r.db.ExecContext(ctx,
-		`DELETE FROM role_permissions WHERE role_id = $1 AND permission_id = $2`,
+		`DELETE FROM role_permissions WHERE role_id = ? AND permission_id = ?`,
 		roleID, permissionID,
 	)
 	return err
@@ -35,10 +35,10 @@ func (r *RolePermissionRepository) RemovePermission(ctx context.Context, roleID,
 
 func (r *RolePermissionRepository) GetPermissionsByRoleID(ctx context.Context, roleID int64) ([]*models.Permission, error) {
 	rows, err := r.db.QueryContext(ctx,
-		`SELECT p.permission_id, p.permission_name, p.created_at, p.update_at
+		`SELECT p.permission_id, p.permission_name, p.created_at, p.updated_at
 		 FROM permissions p
 		 INNER JOIN role_permissions rp ON rp.permission_id = p.permission_id
-		 WHERE rp.role_id = $1`, roleID)
+		 WHERE rp.role_id = ?`, roleID)
 	if err != nil {
 		return nil, err
 	}

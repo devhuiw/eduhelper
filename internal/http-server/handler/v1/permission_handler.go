@@ -33,6 +33,16 @@ func NewPermissionHandler(repo PermissionRepository) *PermissionHandler {
 	return &PermissionHandler{repo: repo}
 }
 
+// @Summary Создать право
+// @Tags permissions
+// @Accept json
+// @Produce json
+// @Param input body models.Permission true "Право"
+// @Success 201 {object} models.Permission
+// @Failure 400 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/permissions [post]
+// @Security BearerAuth
 func (h *PermissionHandler) CreatePermission(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.permission.CreatePermission"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -55,6 +65,17 @@ func (h *PermissionHandler) CreatePermission(log *slog.Logger) http.HandlerFunc 
 	}
 }
 
+// @Summary Получить право по ID
+// @Tags permissions
+// @Accept json
+// @Produce json
+// @Param id path int true "ID права"
+// @Success 200 {object} models.Permission
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/permissions/{id} [get]
+// @Security BearerAuth
 func (h *PermissionHandler) GetPermissionByID(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.permission.GetPermissionByID"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -84,6 +105,18 @@ func (h *PermissionHandler) GetPermissionByID(log *slog.Logger) http.HandlerFunc
 	}
 }
 
+// @Summary Обновить право
+// @Tags permissions
+// @Accept json
+// @Produce json
+// @Param id path int true "ID права"
+// @Param input body models.Permission true "Право"
+// @Success 200 {object} models.Permission
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/permissions/{id} [put]
+// @Security BearerAuth
 func (h *PermissionHandler) UpdatePermission(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.permission.UpdatePermission"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -121,6 +154,17 @@ func (h *PermissionHandler) UpdatePermission(log *slog.Logger) http.HandlerFunc 
 	}
 }
 
+// @Summary Удалить право
+// @Tags permissions
+// @Accept json
+// @Produce json
+// @Param id path int true "ID права"
+// @Success 204 {string} string "No Content"
+// @Failure 400 {object} resp.Response
+// @Failure 404 {object} resp.Response
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/permissions/{id} [delete]
+// @Security BearerAuth
 func (h *PermissionHandler) DeletePermission(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.permission.DeletePermission"
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -149,6 +193,16 @@ func (h *PermissionHandler) DeletePermission(log *slog.Logger) http.HandlerFunc 
 	}
 }
 
+// @Summary Получить список прав
+// @Tags permissions
+// @Accept json
+// @Produce json
+// @Param limit query int false "Ограничение"
+// @Param offset query int false "Смещение"
+// @Success 200 {array} models.Permission
+// @Failure 500 {object} resp.Response
+// @Router /api/v1/permissions [get]
+// @Security BearerAuth
 func (h *PermissionHandler) ListPermissions(log *slog.Logger) http.HandlerFunc {
 	const op = "handler.v1.permission.ListPermissions"
 	return func(w http.ResponseWriter, r *http.Request) {
