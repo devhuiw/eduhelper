@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"service/internal/domain/models"
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 	"time"
 
@@ -28,11 +29,12 @@ type GradeJournalRepository interface {
 }
 
 type GradeJournalHandler struct {
-	repo GradeJournalRepository
+	repo      GradeJournalRepository
+	auditRepo AuditLogRepository
 }
 
-func NewGradeJournalHandler(repo GradeJournalRepository) *GradeJournalHandler {
-	return &GradeJournalHandler{repo: repo}
+func NewGradeJournalHandler(repo GradeJournalRepository, auditRepo AuditLogRepository) *GradeJournalHandler {
+	return &GradeJournalHandler{repo: repo, auditRepo: auditRepo}
 }
 
 // @Summary Добавить запись в журнал оценок
@@ -60,6 +62,14 @@ func (h *GradeJournalHandler) CreateGradeJournal(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("failed to create gradejournal"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "grade_journal",
+			RowID:      g.GradeJournalID,
+			ActionType: "CREATE",
+			NewData:    utils.PtrToJSON(g),
+			Comment:    utils.PtrToStr("Grade_Journal created"),
+		})
 		w.WriteHeader(http.StatusCreated)
 		render.JSON(w, r, g)
 	}
@@ -131,6 +141,7 @@ func (h *GradeJournalHandler) UpdateGradeJournal(log *slog.Logger) http.HandlerF
 			return
 		}
 		g.GradeJournalID = id
+		oldData, _ := h.repo.GetGradeJournalByID(r.Context(), id)
 		if err := h.repo.UpdateGradeJournal(r.Context(), &g); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("gradejournal not found for update", slog.Int64("gradejournal_id", id))
@@ -143,6 +154,15 @@ func (h *GradeJournalHandler) UpdateGradeJournal(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("failed to update gradejournal"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "grade_journal",
+			RowID:      id,
+			ActionType: "UPDATE",
+			NewData:    utils.PtrToJSON(g),
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Grade_Journal created"),
+		})
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, g)
 	}
@@ -168,6 +188,7 @@ func (h *GradeJournalHandler) DeleteGradeJournal(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("invalid gradejournal id"))
 			return
 		}
+		oldData, _ := h.repo.GetGradeJournalByID(r.Context(), id)
 		if err := h.repo.DeleteGradeJournal(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("gradejournal not found for delete", slog.Int64("gradejournal_id", id))
@@ -180,6 +201,14 @@ func (h *GradeJournalHandler) DeleteGradeJournal(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("failed to delete gradejournal"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "grade_journal",
+			RowID:      id,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Grade_Journal deleted"),
+		})
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

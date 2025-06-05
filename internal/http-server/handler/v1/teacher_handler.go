@@ -10,6 +10,7 @@ import (
 	"service/internal/domain/models"
 	ware "service/internal/http-server/middleware"
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -28,11 +29,12 @@ type TeacherRepository interface {
 }
 
 type TeacherHandler struct {
-	repo TeacherRepository
+	repo      TeacherRepository
+	auditRepo AuditLogRepository
 }
 
-func NewTeacherHandler(repo TeacherRepository) *TeacherHandler {
-	return &TeacherHandler{repo: repo}
+func NewTeacherHandler(repo TeacherRepository, auditRepo AuditLogRepository) *TeacherHandler {
+	return &TeacherHandler{repo: repo, auditRepo: auditRepo}
 }
 
 // @Summary Создать преподавателя
@@ -63,6 +65,14 @@ func (h *TeacherHandler) CreateTeacher(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to create teacher"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "teacher",
+			RowID:      teacher.UserID,
+			ActionType: "CREATE",
+			NewData:    utils.PtrToJSON(teacher),
+			Comment:    utils.PtrToStr("Teacher created"),
+		})
 		w.WriteHeader(http.StatusCreated)
 		render.JSON(w, r, teacher)
 	}
@@ -213,6 +223,7 @@ func (h *TeacherHandler) UpdateTeacher(log *slog.Logger) http.HandlerFunc {
 			return
 		}
 		teacher.UserID = teacherId
+		oldData, _ := h.repo.GetTeacherByID(r.Context(), teacherId)
 		if err := h.repo.UpdateTeacher(r.Context(), &teacher); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("user not found for update", slog.Int64("user_id", teacherId))
@@ -225,7 +236,15 @@ func (h *TeacherHandler) UpdateTeacher(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to update user"))
 			return
 		}
-
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "teacher",
+			RowID:      teacherId,
+			ActionType: "UPDATE",
+			NewData:    utils.PtrToJSON(teacher),
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Teacher updated"),
+		})
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, teacher)
 	}
@@ -256,6 +275,7 @@ func (h *TeacherHandler) UpdateMyTeacherProfile(log *slog.Logger) http.HandlerFu
 			return
 		}
 		teacher.UserID = teacherId
+		oldData, _ := h.repo.GetTeacherByID(r.Context(), teacherId)
 		if err := h.repo.UpdateTeacher(r.Context(), &teacher); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("user not found for update", slog.Int64("user_id", teacherId))
@@ -268,7 +288,15 @@ func (h *TeacherHandler) UpdateMyTeacherProfile(log *slog.Logger) http.HandlerFu
 			render.JSON(w, r, resp.Error("failed to update user"))
 			return
 		}
-
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "teacher",
+			RowID:      teacherId,
+			ActionType: "UPDATE",
+			NewData:    utils.PtrToJSON(teacher),
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Teacher updated"),
+		})
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, teacher)
 	}
@@ -297,6 +325,7 @@ func (h *TeacherHandler) DeleteTeacher(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("invalid teacher id"))
 			return
 		}
+		oldData, _ := h.repo.GetTeacherByID(r.Context(), id)
 		if err := h.repo.DeleteTeacher(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("teacher not found for delete", slog.Int64("user_id", id))
@@ -309,6 +338,14 @@ func (h *TeacherHandler) DeleteTeacher(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to delete teacher"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "teacher",
+			RowID:      id,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Teacher created"),
+		})
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"service/internal/domain/models"
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -23,11 +24,12 @@ type UserRoleRepository interface {
 }
 
 type UserRoleHandler struct {
-	repo UserRoleRepository
+	repo      UserRoleRepository
+	auditRepo AuditLogRepository
 }
 
-func NewUserRoleHandler(repo UserRoleRepository) *UserRoleHandler {
-	return &UserRoleHandler{repo: repo}
+func NewUserRoleHandler(repo UserRoleRepository, auditRepo AuditLogRepository) *UserRoleHandler {
+	return &UserRoleHandler{repo: repo, auditRepo: auditRepo}
 }
 
 type assignRoleInput struct {
@@ -62,6 +64,17 @@ func (h *UserRoleHandler) AssignRole(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to assign role"))
 			return
 		}
+
+		// Аудит
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "user_role",
+			RowID:      input.UserID,
+			ActionType: "INSERT",
+			NewData:    utils.PtrToJSON(input),
+			Comment:    utils.PtrToJSON("Assigned role"),
+		})
+
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, resp.OK())
 	}
@@ -94,6 +107,17 @@ func (h *UserRoleHandler) RemoveRole(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to remove role"))
 			return
 		}
+
+		// Аудит
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "user_role",
+			RowID:      input.UserID,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(input),
+			Comment:    utils.PtrToStr("Removed role"),
+		})
+
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, resp.OK())
 	}

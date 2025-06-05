@@ -173,3 +173,17 @@ CREATE TABLE
         FOREIGN KEY (semester_id) REFERENCES semester (semester_id),
         FOREIGN KEY (discipline_id) REFERENCES discipline (discipline_id)
     );
+
+CREATE TABLE
+    `audit_log` (
+        audit_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        user_id BIGINT,
+        table_name VARCHAR(100) NOT NULL,
+        row_id BIGINT NOT NULL,
+        action_type ENUM ('INSERT', 'UPDATE', 'DELETE') NOT NULL,
+        old_data JSON,
+        new_data JSON,
+        comment TEXT,
+        FOREIGN KEY (user_id) REFERENCES user (user_id)
+    );

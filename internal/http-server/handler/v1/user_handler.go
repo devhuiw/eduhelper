@@ -7,7 +7,9 @@ import (
 	"log/slog"
 	"net/http"
 	"service/internal/domain/models"
+
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 
 	"database/sql"
@@ -27,11 +29,12 @@ type UserRepository interface {
 }
 
 type UserHandler struct {
-	repo UserRepository
+	repo      UserRepository
+	auditRepo AuditLogRepository
 }
 
-func NewUserHandler(repo UserRepository) *UserHandler {
-	return &UserHandler{repo: repo}
+func NewUserHandler(repo UserRepository, auditRepo AuditLogRepository) *UserHandler {
+	return &UserHandler{repo: repo, auditRepo: auditRepo}
 }
 
 // @Summary Создать пользователя
@@ -64,6 +67,16 @@ func (h *UserHandler) CreateUser(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to create user"))
 			return
 		}
+
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "user",
+			RowID:      user.UserID,
+			ActionType: "INSERT",
+			NewData:    utils.PtrToJSON(user),
+			Comment:    utils.PtrToStr("User created"),
+		})
+
 		w.WriteHeader(http.StatusCreated)
 		render.JSON(w, r, user)
 	}
@@ -140,6 +153,7 @@ func (h *UserHandler) UpdateUser(log *slog.Logger) http.HandlerFunc {
 			return
 		}
 		var user models.User
+		oldUser, _ := h.repo.GetClientByID(r.Context(), id)
 		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 			log.Info("failed to decode request body", slog.String("err", err.Error()))
 			w.WriteHeader(http.StatusBadRequest)
@@ -159,6 +173,17 @@ func (h *UserHandler) UpdateUser(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to update user"))
 			return
 		}
+
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "user",
+			RowID:      user.UserID,
+			ActionType: "UPDATE",
+			OldData:    utils.PtrToJSON(oldUser),
+			NewData:    utils.PtrToJSON(user),
+			Comment:    utils.PtrToStr("User updated"),
+		})
+
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, user)
 	}
@@ -190,6 +215,7 @@ func (h *UserHandler) DeleteUser(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("invalid user id"))
 			return
 		}
+		oldUser, _ := h.repo.GetClientByID(r.Context(), id)
 		if err := h.repo.DeleteClient(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("user not found for delete", slog.Int64("user_id", id))
@@ -202,6 +228,16 @@ func (h *UserHandler) DeleteUser(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to delete user"))
 			return
 		}
+
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "user",
+			RowID:      id,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(oldUser),
+			Comment:    utils.PtrToStr("User deleted"),
+		})
+
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

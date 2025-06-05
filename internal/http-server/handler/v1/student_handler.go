@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"service/internal/domain/models"
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -27,11 +28,12 @@ type StudentRepository interface {
 }
 
 type StudentHandler struct {
-	repo StudentRepository
+	repo      StudentRepository
+	auditRepo AuditLogRepository
 }
 
-func NewStudentHandler(repo StudentRepository) *StudentHandler {
-	return &StudentHandler{repo: repo}
+func NewStudentHandler(repo StudentRepository, auditRepo AuditLogRepository) *StudentHandler {
+	return &StudentHandler{repo: repo, auditRepo: auditRepo}
 }
 
 // @Summary Создать студента
@@ -64,6 +66,14 @@ func (h *StudentHandler) CreateStudent(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to create student"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "student",
+			RowID:      student.UserID,
+			ActionType: "CREATE",
+			NewData:    utils.PtrToJSON(student),
+			Comment:    utils.PtrToStr("Student created"),
+		})
 		w.WriteHeader(http.StatusCreated)
 		render.JSON(w, r, student)
 	}
@@ -188,6 +198,7 @@ func (h *StudentHandler) UpdateStudent(log *slog.Logger) http.HandlerFunc {
 			return
 		}
 		student.UserID = id
+		oldData, _ := h.repo.GetStudentByID(r.Context(), id)
 		if err := h.repo.UpdateStudent(r.Context(), &student); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("student not found for update", slog.Int64("user_id", id))
@@ -200,6 +211,15 @@ func (h *StudentHandler) UpdateStudent(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to update student"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "student",
+			RowID:      id,
+			ActionType: "UPDATE",
+			NewData:    utils.PtrToJSON(student),
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Student updated"),
+		})
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, student)
 	}
@@ -231,6 +251,7 @@ func (h *StudentHandler) DeleteStudent(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("invalid student id"))
 			return
 		}
+		oldData, _ := h.repo.GetStudentByID(r.Context(), id)
 		if err := h.repo.DeleteStudent(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("student not found for delete", slog.Int64("user_id", id))
@@ -243,6 +264,14 @@ func (h *StudentHandler) DeleteStudent(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to delete student"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "student",
+			RowID:      id,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Student deleted"),
+		})
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

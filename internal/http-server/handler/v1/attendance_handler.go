@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"service/internal/domain/models"
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 	"time"
 
@@ -27,11 +28,12 @@ type AttendanceRepository interface {
 }
 
 type AttendanceHandler struct {
-	repo AttendanceRepository
+	repo      AttendanceRepository
+	auditRepo AuditLogRepository
 }
 
-func NewAttendanceHandler(repo AttendanceRepository) *AttendanceHandler {
-	return &AttendanceHandler{repo: repo}
+func NewAttendanceHandler(repo AttendanceRepository, auditRepo AuditLogRepository) *AttendanceHandler {
+	return &AttendanceHandler{repo: repo, auditRepo: auditRepo}
 }
 
 // @Summary Добавить посещаемость
@@ -59,6 +61,14 @@ func (h *AttendanceHandler) CreateAttendance(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("failed to create attendance"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "attendance",
+			RowID:      a.AttendanceID,
+			ActionType: "Create",
+			NewData:    utils.PtrToJSON(a),
+			Comment:    utils.PtrToStr("Attendance created"),
+		})
 		w.WriteHeader(http.StatusCreated)
 		render.JSON(w, r, a)
 	}
@@ -97,6 +107,7 @@ func (h *AttendanceHandler) GetAttendanceByID(log *slog.Logger) http.HandlerFunc
 			render.JSON(w, r, resp.Error("failed to get attendance"))
 			return
 		}
+
 		render.JSON(w, r, a)
 	}
 }
@@ -129,6 +140,7 @@ func (h *AttendanceHandler) UpdateAttendance(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("invalid request"))
 			return
 		}
+		oldAttendance, _ := h.repo.GetAttendanceByID(r.Context(), id)
 		a.AttendanceID = id
 		if err := h.repo.UpdateAttendance(r.Context(), &a); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
@@ -142,6 +154,15 @@ func (h *AttendanceHandler) UpdateAttendance(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("failed to update attendance"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "attendance",
+			RowID:      a.AttendanceID,
+			ActionType: "UPDATE",
+			OldData:    utils.PtrToJSON(oldAttendance),
+			NewData:    utils.PtrToJSON(a),
+			Comment:    utils.PtrToStr("Attendance updated"),
+		})
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, a)
 	}
@@ -167,6 +188,7 @@ func (h *AttendanceHandler) DeleteAttendance(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("invalid attendance id"))
 			return
 		}
+		oldAttendance, _ := h.repo.GetAttendanceByID(r.Context(), id)
 		if err := h.repo.DeleteAttendance(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("attendance not found for delete", slog.Int64("attendance_id", id))
@@ -179,6 +201,14 @@ func (h *AttendanceHandler) DeleteAttendance(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("failed to delete attendance"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "attendance",
+			RowID:      id,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(oldAttendance),
+			Comment:    utils.PtrToStr("Attendance deleted"),
+		})
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

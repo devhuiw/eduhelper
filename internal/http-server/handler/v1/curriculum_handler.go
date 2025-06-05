@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"service/internal/domain/models"
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -25,11 +26,12 @@ type CurriculumRepository interface {
 }
 
 type CurriculumHandler struct {
-	repo CurriculumRepository
+	repo      CurriculumRepository
+	auditRepo AuditLogRepository
 }
 
-func NewCurriculumHandler(repo CurriculumRepository) *CurriculumHandler {
-	return &CurriculumHandler{repo: repo}
+func NewCurriculumHandler(repo CurriculumRepository, auditRepo AuditLogRepository) *CurriculumHandler {
+	return &CurriculumHandler{repo: repo, auditRepo: auditRepo}
 }
 
 // @Summary Создать учебный план
@@ -57,6 +59,14 @@ func (h *CurriculumHandler) CreateCurriculum(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("failed to create curriculum"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "curriculum",
+			RowID:      c.CurriculumID,
+			ActionType: "CREATE",
+			NewData:    utils.PtrToJSON(c),
+			Comment:    utils.PtrToStr("Curriculum created."),
+		})
 		w.WriteHeader(http.StatusCreated)
 		render.JSON(w, r, c)
 	}
@@ -128,6 +138,7 @@ func (h *CurriculumHandler) UpdateCurriculum(log *slog.Logger) http.HandlerFunc 
 			return
 		}
 		c.CurriculumID = id
+		oldData, _ := h.repo.GetCurriculumByID(r.Context(), id)
 		if err := h.repo.UpdateCurriculum(r.Context(), &c); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("curriculum not found for update", slog.Int64("curriculum_id", id))
@@ -140,6 +151,16 @@ func (h *CurriculumHandler) UpdateCurriculum(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("failed to update curriculum"))
 			return
 		}
+
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "curriculum",
+			RowID:      id,
+			ActionType: "UPDATE",
+			NewData:    utils.PtrToJSON(c),
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Curriculum updated"),
+		})
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, c)
 	}
@@ -165,6 +186,7 @@ func (h *CurriculumHandler) DeleteCurriculum(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("invalid curriculum id"))
 			return
 		}
+		oldData, _ := h.repo.GetCurriculumByID(r.Context(), id)
 		if err := h.repo.DeleteCurriculum(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("curriculum not found for delete", slog.Int64("curriculum_id", id))
@@ -177,6 +199,14 @@ func (h *CurriculumHandler) DeleteCurriculum(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("failed to delete curriculum"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "curriculum",
+			RowID:      id,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Curriculum deleted"),
+		})
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

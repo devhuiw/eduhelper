@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"service/internal/domain/models"
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -26,11 +27,12 @@ type RoleRepository interface {
 }
 
 type RoleHandler struct {
-	repo RoleRepository
+	repo      RoleRepository
+	auditRepo AuditLogRepository
 }
 
-func NewRoleHandler(repo RoleRepository) *RoleHandler {
-	return &RoleHandler{repo: repo}
+func NewRoleHandler(repo RoleRepository, auditRepo AuditLogRepository) *RoleHandler {
+	return &RoleHandler{repo: repo, auditRepo: auditRepo}
 }
 
 // @Summary Создать роль
@@ -62,6 +64,14 @@ func (h *RoleHandler) CreateRole(log *slog.Logger) http.HandlerFunc {
 			return
 		}
 		role.RoleID = id
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "Role",
+			RowID:      role.RoleID,
+			ActionType: "CREATE",
+			NewData:    utils.PtrToJSON(role),
+			Comment:    utils.PtrToStr("Role created"),
+		})
 		w.WriteHeader(http.StatusCreated)
 		render.JSON(w, r, role)
 	}
@@ -139,6 +149,7 @@ func (h *RoleHandler) UpdateRole(log *slog.Logger) http.HandlerFunc {
 			return
 		}
 		role.RoleID = id
+		oldData, _ := h.repo.GetRoleByID(r.Context(), id)
 		if err := h.repo.UpdateRole(r.Context(), &role); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("role not found for update", slog.Int64("id", id))
@@ -151,6 +162,15 @@ func (h *RoleHandler) UpdateRole(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to update role"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "Role",
+			RowID:      role.RoleID,
+			ActionType: "UPDATE",
+			NewData:    utils.PtrToJSON(role),
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Role updated"),
+		})
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, role)
 	}
@@ -179,6 +199,7 @@ func (h *RoleHandler) DeleteRole(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("invalid role id"))
 			return
 		}
+		oldData, _ := h.repo.GetRoleByID(r.Context(), id)
 		if err := h.repo.DeleteRole(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("role not found for delete", slog.Int64("id", id))
@@ -191,6 +212,14 @@ func (h *RoleHandler) DeleteRole(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to delete role"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "Role",
+			RowID:      id,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Role deleted"),
+		})
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

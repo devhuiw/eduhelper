@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"service/internal/domain/models"
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 	"time"
 
@@ -26,11 +27,12 @@ type SemesterRepository interface {
 }
 
 type SemesterHandler struct {
-	repo SemesterRepository
+	repo      SemesterRepository
+	auditRepo AuditLogRepository
 }
 
-func NewSemesterHandler(repo SemesterRepository) *SemesterHandler {
-	return &SemesterHandler{repo: repo}
+func NewSemesterHandler(repo SemesterRepository, auditRepo AuditLogRepository) *SemesterHandler {
+	return &SemesterHandler{repo: repo, auditRepo: auditRepo}
 }
 
 // @Summary Создать семестр
@@ -58,6 +60,14 @@ func (h *SemesterHandler) CreateSemester(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to create semester"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "semestr",
+			RowID:      s.SemesterID,
+			ActionType: "CREATE",
+			NewData:    utils.PtrToJSON(s),
+			Comment:    utils.PtrToStr("Semestr created"),
+		})
 		w.WriteHeader(http.StatusCreated)
 		render.JSON(w, r, s)
 	}
@@ -129,6 +139,7 @@ func (h *SemesterHandler) UpdateSemester(log *slog.Logger) http.HandlerFunc {
 			return
 		}
 		s.SemesterID = id
+		oldData, _ := h.repo.GetSemesterByID(r.Context(), id)
 		if err := h.repo.UpdateSemester(r.Context(), &s); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("semester not found for update", slog.Int64("semester_id", id))
@@ -141,6 +152,15 @@ func (h *SemesterHandler) UpdateSemester(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to update semester"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "semestr",
+			RowID:      id,
+			ActionType: "UPDATE",
+			NewData:    utils.PtrToJSON(s),
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Semestr updated"),
+		})
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, s)
 	}
@@ -166,6 +186,7 @@ func (h *SemesterHandler) DeleteSemester(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("invalid semester id"))
 			return
 		}
+		oldData, _ := h.repo.GetSemesterByID(r.Context(), id)
 		if err := h.repo.DeleteSemester(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("semester not found for delete", slog.Int64("semester_id", id))
@@ -178,6 +199,14 @@ func (h *SemesterHandler) DeleteSemester(log *slog.Logger) http.HandlerFunc {
 			render.JSON(w, r, resp.Error("failed to delete semester"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "semestr",
+			RowID:      id,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Semestr deleted"),
+		})
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

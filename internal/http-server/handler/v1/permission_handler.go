@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"service/internal/domain/models"
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -26,11 +27,12 @@ type PermissionRepository interface {
 }
 
 type PermissionHandler struct {
-	repo PermissionRepository
+	repo      PermissionRepository
+	auditRepo AuditLogRepository
 }
 
-func NewPermissionHandler(repo PermissionRepository) *PermissionHandler {
-	return &PermissionHandler{repo: repo}
+func NewPermissionHandler(repo PermissionRepository, auditRepo AuditLogRepository) *PermissionHandler {
+	return &PermissionHandler{repo: repo, auditRepo: auditRepo}
 }
 
 // @Summary Создать право
@@ -60,6 +62,14 @@ func (h *PermissionHandler) CreatePermission(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("failed to create permission"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "permission",
+			RowID:      perm.PermissionID,
+			ActionType: "CREATE",
+			NewData:    utils.PtrToJSON(perm),
+			Comment:    utils.PtrToStr("Permission created"),
+		})
 		w.WriteHeader(http.StatusCreated)
 		render.JSON(w, r, perm)
 	}
@@ -137,6 +147,7 @@ func (h *PermissionHandler) UpdatePermission(log *slog.Logger) http.HandlerFunc 
 			return
 		}
 		perm.PermissionID = id
+		oldData, _ := h.repo.GetPermissionByID(r.Context(), id)
 		if err := h.repo.UpdatePermission(r.Context(), &perm); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("permission not found for update", slog.Int64("id", id))
@@ -149,6 +160,15 @@ func (h *PermissionHandler) UpdatePermission(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("failed to update permission"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "permission",
+			RowID:      id,
+			ActionType: "UPDATE",
+			NewData:    utils.PtrToJSON(perm),
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Permission updated"),
+		})
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, perm)
 	}
@@ -177,6 +197,7 @@ func (h *PermissionHandler) DeletePermission(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("invalid permission id"))
 			return
 		}
+		oldData, _ := h.repo.GetPermissionByID(r.Context(), id)
 		if err := h.repo.DeletePermission(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("permission not found for delete", slog.Int64("id", id))
@@ -189,6 +210,14 @@ func (h *PermissionHandler) DeletePermission(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("failed to delete permission"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "permission",
+			RowID:      id,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Permission created"),
+		})
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"service/internal/domain/models"
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -25,11 +26,12 @@ type AcademicYearRepository interface {
 }
 
 type AcademicYearHandler struct {
-	repo AcademicYearRepository
+	repo      AcademicYearRepository
+	auditRepo AuditLogRepository
 }
 
-func NewAcademicYearHandler(repo AcademicYearRepository) *AcademicYearHandler {
-	return &AcademicYearHandler{repo: repo}
+func NewAcademicYearHandler(repo AcademicYearRepository, auditRepo AuditLogRepository) *AcademicYearHandler {
+	return &AcademicYearHandler{repo: repo, auditRepo: auditRepo}
 }
 
 // @Summary Создать учебный год
@@ -60,6 +62,16 @@ func (h *AcademicYearHandler) CreateAcademicYear(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("failed to create academic year"))
 			return
 		}
+
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "academic_year",
+			RowID:      year.AcademicYearID,
+			ActionType: "CREATE",
+			NewData:    utils.PtrToJSON(year),
+			Comment:    utils.PtrToStr("Academic year created"),
+		})
+
 		w.WriteHeader(http.StatusCreated)
 		render.JSON(w, r, year)
 	}
@@ -136,6 +148,7 @@ func (h *AcademicYearHandler) UpdateAcademicYear(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("invalid request"))
 			return
 		}
+		oldYear, _ := h.repo.GetAcademicYearByID(r.Context(), id)
 		year.AcademicYearID = id
 		if err := h.repo.UpdateAcademicYear(r.Context(), &year); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
@@ -149,6 +162,15 @@ func (h *AcademicYearHandler) UpdateAcademicYear(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("failed to update academic year"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "academic_year",
+			RowID:      year.AcademicYearID,
+			ActionType: "UPDATE",
+			OldData:    utils.PtrToJSON(oldYear),
+			NewData:    utils.PtrToJSON(year),
+			Comment:    utils.PtrToStr("Academic year update"),
+		})
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, year)
 	}
@@ -177,6 +199,7 @@ func (h *AcademicYearHandler) DeleteAcademicYear(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("invalid academic year id"))
 			return
 		}
+		oldYear, _ := h.repo.GetAcademicYearByID(r.Context(), id)
 		if err := h.repo.DeleteAcademicYear(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("academic year not found for delete", slog.Int64("academic_year_id", id))
@@ -189,6 +212,14 @@ func (h *AcademicYearHandler) DeleteAcademicYear(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("failed to delete academic year"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "academic_year",
+			RowID:      id,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(oldYear),
+			Comment:    utils.PtrToStr("Deleted academic year"),
+		})
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

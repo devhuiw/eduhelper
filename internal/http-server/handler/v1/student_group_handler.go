@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"service/internal/domain/models"
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -27,11 +28,12 @@ type StudentGroupRepository interface {
 }
 
 type StudentGroupHandler struct {
-	repo StudentGroupRepository
+	repo      StudentGroupRepository
+	auditRepo AuditLogRepository
 }
 
-func NewStudentGroupHandler(repo StudentGroupRepository) *StudentGroupHandler {
-	return &StudentGroupHandler{repo: repo}
+func NewStudentGroupHandler(repo StudentGroupRepository, auditRepo AuditLogRepository) *StudentGroupHandler {
+	return &StudentGroupHandler{repo: repo, auditRepo: auditRepo}
 }
 
 // @Summary Создать группу студентов
@@ -66,6 +68,14 @@ func (h *StudentGroupHandler) CreateStudentGroup(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("failed to create student group"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "student_group",
+			RowID:      group.StudentGroupID,
+			ActionType: "CREATE",
+			NewData:    utils.PtrToJSON(group),
+			Comment:    utils.PtrToStr("Student group created"),
+		})
 		w.WriteHeader(http.StatusCreated)
 		render.JSON(w, r, group)
 	}
@@ -186,6 +196,7 @@ func (h *StudentGroupHandler) UpdateStudentGroup(log *slog.Logger) http.HandlerF
 			return
 		}
 		group.StudentGroupID = id
+		oldData, _ := h.repo.GetStudentGroupByID(r.Context(), id)
 		if err := h.repo.UpdateStudentGroup(r.Context(), &group); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("group not found for update", slog.Int64("student_group_id", id))
@@ -198,6 +209,15 @@ func (h *StudentGroupHandler) UpdateStudentGroup(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("failed to update group"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "student_group",
+			RowID:      id,
+			ActionType: "UPDATE",
+			NewData:    utils.PtrToJSON(group),
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Student Group updated"),
+		})
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, group)
 	}
@@ -227,6 +247,7 @@ func (h *StudentGroupHandler) DeleteStudentGroup(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("invalid group id"))
 			return
 		}
+		oldData, _ := h.repo.GetStudentGroupByID(r.Context(), id)
 		if err := h.repo.DeleteStudentGroup(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("group not found for delete", slog.Int64("student_group_id", id))
@@ -239,6 +260,14 @@ func (h *StudentGroupHandler) DeleteStudentGroup(log *slog.Logger) http.HandlerF
 			render.JSON(w, r, resp.Error("failed to delete group"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "student_group",
+			RowID:      id,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Student Group deleted"),
+		})
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

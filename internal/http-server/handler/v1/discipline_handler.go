@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"service/internal/domain/models"
 	resp "service/internal/lib/api/response"
+	"service/internal/lib/utils"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -27,11 +28,12 @@ type DisciplineRepository interface {
 }
 
 type DisciplineHandler struct {
-	repo DisciplineRepository
+	repo      DisciplineRepository
+	auditRepo AuditLogRepository
 }
 
-func NewDisciplineHandler(repo DisciplineRepository) *DisciplineHandler {
-	return &DisciplineHandler{repo: repo}
+func NewDisciplineHandler(repo DisciplineRepository, auditRepo AuditLogRepository) *DisciplineHandler {
+	return &DisciplineHandler{repo: repo, auditRepo: auditRepo}
 }
 
 // @Summary Создать дисциплину
@@ -64,6 +66,14 @@ func (h *DisciplineHandler) CreateDiscipline(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("failed to create discipline"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "discipline",
+			RowID:      discipline.DisciplineID,
+			ActionType: "CREATE",
+			NewData:    utils.PtrToJSON(discipline),
+			Comment:    utils.PtrToStr("Discipline created"),
+		})
 		w.WriteHeader(http.StatusCreated)
 		render.JSON(w, r, discipline)
 	}
@@ -143,6 +153,7 @@ func (h *DisciplineHandler) UpdateDiscipline(log *slog.Logger) http.HandlerFunc 
 			return
 		}
 		discipline.DisciplineID = id
+		oldData, _ := h.repo.GetDisciplineByID(r.Context(), id)
 		if err := h.repo.UpdateDiscipline(r.Context(), &discipline); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("discipline not found for update", slog.Int64("discipline_id", id))
@@ -155,6 +166,15 @@ func (h *DisciplineHandler) UpdateDiscipline(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("failed to update discipline"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "discipline",
+			RowID:      id,
+			ActionType: "UPDATE",
+			NewData:    utils.PtrToJSON(discipline),
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Discipline updated"),
+		})
 		w.WriteHeader(http.StatusOK)
 		render.JSON(w, r, discipline)
 	}
@@ -184,6 +204,7 @@ func (h *DisciplineHandler) DeleteDiscipline(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("invalid discipline id"))
 			return
 		}
+		oldData, _ := h.repo.GetDisciplineByID(r.Context(), id)
 		if err := h.repo.DeleteDiscipline(r.Context(), id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				log.Info("discipline not found for delete", slog.Int64("discipline_id", id))
@@ -196,6 +217,14 @@ func (h *DisciplineHandler) DeleteDiscipline(log *slog.Logger) http.HandlerFunc 
 			render.JSON(w, r, resp.Error("failed to delete discipline"))
 			return
 		}
+		_ = h.auditRepo.AddAuditLog(r.Context(), &models.AuditLog{
+			UserID:     utils.GetUserIDFromContext(r.Context()),
+			TableName:  "discipline",
+			RowID:      id,
+			ActionType: "DELETE",
+			OldData:    utils.PtrToJSON(oldData),
+			Comment:    utils.PtrToStr("Discipline deleted"),
+		})
 		w.WriteHeader(http.StatusNoContent)
 	}
 }

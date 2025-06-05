@@ -39,49 +39,51 @@ func NewServer(
 		log,
 	)
 
+	auditLogRepository := repository.NewAuditLogRepository(db)
+
 	userRepository := repository.NewUserRepository(db)
-	userHandler := v1.NewUserHandler(userRepository)
+	userHandler := v1.NewUserHandler(userRepository, auditLogRepository)
 
 	authHandler := v1.NewAuthHandler(userRepository, cfg.JwtSecret)
 
 	teacherRepository := repository.NewTeacherRepository(db)
-	teacherHandler := v1.NewTeacherHandler(teacherRepository)
+	teacherHandler := v1.NewTeacherHandler(teacherRepository, auditLogRepository)
 
 	permissionRepository := repository.NewPermissionRepository(db)
-	permissionHandler := v1.NewPermissionHandler(permissionRepository)
+	permissionHandler := v1.NewPermissionHandler(permissionRepository, auditLogRepository)
 
 	roleRepository := repository.NewRoleRepository(db)
-	roleHandler := v1.NewRoleHandler(roleRepository)
+	roleHandler := v1.NewRoleHandler(roleRepository, auditLogRepository)
 
 	userRoleRepository := repository.NewUserRoleRepository(db)
-	userRoleHandler := v1.NewUserRoleHandler(userRoleRepository)
+	userRoleHandler := v1.NewUserRoleHandler(userRoleRepository, auditLogRepository)
 
 	rolePermissionRepository := repository.NewRolePermissionRepository(db)
 	rolePermissionHandler := v1.NewRolePermissionHandler(rolePermissionRepository)
 
 	studentRepository := repository.NewStudentRepository(db)
-	studentHandler := v1.NewStudentHandler(studentRepository)
+	studentHandler := v1.NewStudentHandler(studentRepository, auditLogRepository)
 
 	studentGroupRepository := repository.NewStudentGroupRepository(db)
-	studentGroupHandler := v1.NewStudentGroupHandler(studentGroupRepository)
+	studentGroupHandler := v1.NewStudentGroupHandler(studentGroupRepository, auditLogRepository)
 
 	curriculumRepository := repository.NewCurriculumRepository(db)
-	curriculumHandler := v1.NewCurriculumHandler(curriculumRepository)
+	curriculumHandler := v1.NewCurriculumHandler(curriculumRepository, auditLogRepository)
 
 	gradeJournalRepository := repository.NewGradeJournalRepository(db)
-	gradeJournalHandler := v1.NewGradeJournalHandler(gradeJournalRepository)
+	gradeJournalHandler := v1.NewGradeJournalHandler(gradeJournalRepository, auditLogRepository)
 
 	attendanceRepository := repository.NewAttendanceRepository(db)
-	attendanceHandler := v1.NewAttendanceHandler(attendanceRepository)
+	attendanceHandler := v1.NewAttendanceHandler(attendanceRepository, auditLogRepository)
 
 	semesterRepository := repository.NewSemesterRepository(db)
-	semesterHandler := v1.NewSemesterHandler(semesterRepository)
+	semesterHandler := v1.NewSemesterHandler(semesterRepository, auditLogRepository)
 
 	disciplineRepository := repository.NewDisciplineRepository(db)
-	disciplineHandler := v1.NewDisciplineHandler(disciplineRepository)
+	disciplineHandler := v1.NewDisciplineHandler(disciplineRepository, auditLogRepository)
 
 	academicYearRepository := repository.NewAcademicYearRepository(db)
-	academicYearHandler := v1.NewAcademicYearHandler(academicYearRepository)
+	academicYearHandler := v1.NewAcademicYearHandler(academicYearRepository, auditLogRepository)
 
 	router.Get("/swagger/*", httpSwagger.WrapHandler)
 

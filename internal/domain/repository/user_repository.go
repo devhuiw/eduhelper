@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"service/internal/domain/models"
 	"time"
 )
@@ -44,6 +43,7 @@ func (r *UserRepository) CreateClient(ctx context.Context, user *models.User) er
 	if err != nil {
 		return err
 	}
+
 	user.UserID = id
 	return nil
 }
@@ -98,8 +98,6 @@ func (r *UserRepository) GetClientByEmail(ctx context.Context, email string) (*m
 		&user.Email,
 		&user.Password,
 	)
-
-	fmt.Printf("[DEBUG] GetByEmail for %s: err=%v, user=%+v\n", email, err, user)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
